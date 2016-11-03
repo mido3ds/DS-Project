@@ -12,6 +12,7 @@
 using namespace std;
 
 /* constatnts  */
+#define SECOND 1000			// in milliseconds
 
 /*	Functions Prototypes  */
 namespace Control
@@ -22,7 +23,6 @@ namespace Control
 
 int main()
 {
-	
 }
 
 namespace Control

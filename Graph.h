@@ -6,19 +6,6 @@
 #include "Data.h"
 using namespace std;
 
-
-//constants
-#define CmdWidth		150
-#define CmdHeight		50
-#define CastleWidth		30
-#define CastleLength	20
-#define CastleXStrt		(CmdWidth/2-(CastleWidth/2))
-#define CastleYStrt		(CmdHeight/2-(CastleLength/2))
-#define TowerWidth      7
-#define TowerLength     3
-#define EnemyShape		219  //ASCII code of enemy char shape 
-
-
 //Functions Prototype
 
 /* set cursor position on the screen */

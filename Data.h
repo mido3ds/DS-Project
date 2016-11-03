@@ -17,22 +17,31 @@ using namespace std;
 */
 
 /* constatnts  */
-#define NUM_OF_TOWERS		4
 #ifndef NULL
 #define NULL				nullptr
 #endif
+#define NUM_OF_TOWERS	4
+#define CmdWidth		150
+#define CmdHeight		50
+#define CastleWidth		30
+#define CastleLength	20
+#define CastleXStrt		(CmdWidth/2-(CastleWidth/2))
+#define CastleYStrt		(CmdHeight/2-(CastleLength/2))
+#define TowerWidth      7
+#define TowerLength     3
+#define EnemyShape		219  //ASCII code of enemy char shape 
 
 /* Enumerators */
 
 //Enemy types: Paver, Fighter, and Shielded Fighter
-enum Etype {
+enum TYPE {
 	PVR,
 	FITR,
 	SHLD_FITR
 };
 
-// The state of the enemy, castle: active, inactive, dead
-enum State
+// The state of the enemy: active, inactive, dead
+enum STATE
 {
 	ACTIVE, INACTIVE, DEAD
 };
@@ -90,7 +99,21 @@ struct Castle
 	int Ystrt;
 	int W;	//width
 	int L;  //Height
-	Tower towers[NUM_OF_TOWERS];	//Castle has 4 towers
+	const Tower* towers[NUM_OF_TOWERS];	//Castle has 4 towers
+
+	// Constructor: initialize variables
+	Castle(Tower* T0, Tower* T1, Tower* T2, Tower* T3):
+		Xstrt(CastleXStrt),
+		Ystrt(CastleYStrt),
+		W(CastleWidth),
+		L(CastleLength)
+	{
+		towers[0] = T0;
+		towers[1] = T1;
+		towers[2] = T2;
+		towers[3] = T3;
+ 	}
+	
 };
 
 struct Enemy
@@ -100,7 +123,7 @@ struct Enemy
 	REGION Region;	//Region of this enemy
 	int Distance;	//Distance to the castle, initialized to 60 (the begining)
 	double Health;	//Enemy health
-	const Etype Type;		//PVR, FITR, SHLD_FITR
+	const TYPE Type;		//PVR, FITR, SHLD_FITR
 
 	// Modified Properities :-
 
@@ -109,7 +132,7 @@ struct Enemy
 	const int fire_power;		// if paver, it is num of metres it can pave
 	const int reload_period;
 
-	State state;		// initialized to ACTIVE
+	STATE state;		// initialized to ACTIVE
 
 	// to be calculated for output
 	int fight_delay;	// time of begin fighting - time of arrival
@@ -123,7 +146,7 @@ struct Enemy
 	// constructor: initialize variables
 	Enemy(int S, int TY, int T, int H, int Pow, int Prd, int R): 
 		ID(S),
-		Type(static_cast<Etype>(TY)),
+		Type(static_cast<TYPE>(TY)),
 		arrive_time(T),
 		Health(H),
 		fire_power(Pow),

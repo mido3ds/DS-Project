@@ -1,0 +1,5 @@
+﻿  utility.cpp
+  Demo.cpp
+  Generating Code...
+Demo.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  Castle.vcxproj -> C:\Users\Mahmoud Adas\Documents\DS-Project\Provided Files\Debug\Castle.exe
