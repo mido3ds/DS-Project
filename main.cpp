@@ -1,22 +1,19 @@
 /*
 *   DS Project CMP-2020 Cairo Uni., Castle Defending Simulator
+*	Here is the Logic of the simulator and the main function
 *   Team: Mahmoud Adas, Mahmoud Yousri, Khaled Sabry
 *   Started 1-Nov-16, Delivered: -----
 */
 
 // header files and libraries
 #include <iostream>
-#include <fstream>
-#include <utility>
-#include "castle.h"
-#include "enemies.h"
-#include "utility.h"
+#include "Graph.h"
+#include "Data.h"
 using namespace std;
 
-// constants
+/* constatnts  */
 
-
-// functions prototypes
+/*	Functions Prototypes  */
 
 int main()
 {
