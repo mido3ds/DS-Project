@@ -18,7 +18,8 @@ using namespace std;
 namespace Control
 {
 	enum Mode {INTER, STEP, SILENT};
-	void ChooseMode();
+	void GetMode();
+	void Read();
 }
 
 int main()
@@ -55,4 +56,7 @@ namespace Control
 			break;
 		}
 	}
+
+	// Reads from input.txt and produces lists of enemies
+	//void Read();
 }

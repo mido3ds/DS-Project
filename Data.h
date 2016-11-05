@@ -40,12 +40,6 @@ enum TYPE {
 	SHLD_FITR
 };
 
-// The state of the enemy: active, inactive, dead
-enum STATE
-{
-	ACTIVE, INACTIVE, DEAD
-};
-
 //The four regions: A, B, C , and D
 enum REGION {	
 	A_REG,
@@ -95,10 +89,10 @@ struct Tower
 struct Castle
 {
 	//starting x,y
-	int Xstrt;
-	int Ystrt;
-	int W;	//width
-	int L;  //Height
+	const int Xstrt;
+	const int Ystrt;
+	const int W;	//width
+	const int L;  //Height
 	const Tower* towers[NUM_OF_TOWERS];	//Castle has 4 towers
 
 	// Constructor: initialize variables
@@ -132,8 +126,6 @@ struct Enemy
 	const int fire_power;		// if paver, it is num of metres it can pave
 	const int reload_period;
 
-	STATE state;		// initialized to ACTIVE
-
 	// to be calculated for output
 	int fight_delay;	// time of begin fighting - time of arrival
 	int kill_delay;		// time of kill - time of arrival
@@ -154,7 +146,6 @@ struct Enemy
 		Region(static_cast<REGION>(R)),
 
 		Distance(60),
-		state(ACTIVE),
 		fight_delay(-1),
 		kill_delay(-1),
 		next(NULL)
