@@ -32,7 +32,6 @@ using namespace std;
 #define EnemyShape		219  //ASCII code of enemy char shape 
 
 /* Enumerators */
-
 //Enemy types: Paver, Fighter, and Shielded Fighter
 enum TYPE {
 	PVR,
@@ -49,13 +48,16 @@ enum REGION {
 };
 
 
-/* Structures Prototypes */
+/* Prototypes */
 struct Tower;
 struct Castle;
 struct Enemy;
+Castle* newCastle();
+void ReadTower(const Tower* t, const int &TH, const int &N, const int &TP);
+Enemy* newEnemy(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &R);
+
 
 /* Structures Implementation */
-
 struct Tower
 {
 	// Given Properities :-
@@ -67,64 +69,43 @@ struct Tower
 
 	// from input:
 	int unpaved;		// the pos of first unpaved block, initialized to 30
-	const int fire_power;		
-	const int maxN_enemies; 		// max num of enemies it can fight
+	int fire_power;		
+	int maxN_enemies; 		// max num of enemies it can fight
 
 	// Pointers to enemies list
-	Enemy* next;		// initailized to first one in list after reading
+	Enemy* firstEnemy;		// initailized to NULL
 	int num_enemies;
-
-	// Constructor: initialize variables
-	Tower(int TH, int N, int TP): 
-		Health(TH), 
-		maxN_enemies(N),
-		fire_power(TP),
-
-		unpaved(30),
-		next(NULL),
-		num_enemies(0)
-	{}
 };
 
 struct Castle
 {
+	// Given Properities :-
 	//starting x,y
-	const int Xstrt;
-	const int Ystrt;
-	const int W;	//width
-	const int L;  //Height
-	const Tower* towers[NUM_OF_TOWERS];	//Castle has 4 towers
+	int Xstrt;
+	int Ystrt;
+	int W;	//width
+	int L;  //Height
+	Tower towers[NUM_OF_TOWERS];	//Castle has 4 towers	
 
-	// Constructor: initialize variables
-	Castle(Tower* T0, Tower* T1, Tower* T2, Tower* T3):
-		Xstrt(CastleXStrt),
-		Ystrt(CastleYStrt),
-		W(CastleWidth),
-		L(CastleLength)
-	{
-		towers[0] = T0;
-		towers[1] = T1;
-		towers[2] = T2;
-		towers[3] = T3;
- 	}
-	
+	// Modified Properities :-
+	double c1, c2, c3;		// constants to calculate priority enemies
 };
 
 struct Enemy
 {
 	// Given Properities :-
-	const int ID;			//Each enemy has a unique ID (sequence number)
+	int ID;			//Each enemy has a unique ID (sequence number)
 	REGION Region;	//Region of this enemy
-	int Distance;	//Distance to the castle, initialized to 60 (the begining)
+	int Distance;	//Distance to the castle, initialized to 0 (Unactive)
 	double Health;	//Enemy health
-	const TYPE Type;		//PVR, FITR, SHLD_FITR
+	TYPE Type;		//PVR, FITR, SHLD_FITR
 
 	// Modified Properities :-
 
 	// from input:
-	const int arrive_time;
-	const int fire_power;		// if paver, it is num of metres it can pave
-	const int reload_period;
+	int arrive_time;
+	int fire_power;		// if paver, it is num of metres it can pave
+	int reload_period;
 
 	// to be calculated for output
 	int fight_delay;	// time of begin fighting - time of arrival
@@ -134,23 +115,58 @@ struct Enemy
 
 	// Pointers
 	Enemy* next;		// initialize to NULL
-
-	// constructor: initialize variables
-	Enemy(int S, int TY, int T, int H, int Pow, int Prd, int R): 
-		ID(S),
-		Type(static_cast<TYPE>(TY)),
-		arrive_time(T),
-		Health(H),
-		fire_power(Pow),
-		reload_period(Prd),
-		Region(static_cast<REGION>(R)),
-
-		Distance(60),
-		fight_delay(-1),
-		kill_delay(-1),
-		next(NULL)
-	{}
-
-	
 };
 
+
+/* functions implementation  */
+
+// returns new castle with its constants initialized
+Castle* newCastle()
+{
+	Castle* C = new Castle;
+	
+	C->Xstrt = CastleXStrt;
+	C->Ystrt = CastleYStrt;
+	C->W = CastleWidth;
+	C->L = CastleLength;
+
+	return C;
+}
+
+// initialize Tower 
+// input: Tower address, input line
+void ReadTower(Tower* t, const int &TH, const int &N, const int &TP)
+{
+	// check if NULL
+	if (!t)
+		throw -1;
+
+	t->Health = TH;
+	t->maxN_enemies = N;
+	t->fire_power = TP;
+
+	t->unpaved = 30;
+	t->firstEnemy = NULL;
+	t->num_enemies = 0;
+} 
+
+// returns address of enemy initialized with input variables
+Enemy* newEnemy(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &R)
+{
+	Enemy* e = new Enemy;
+
+	e->ID = S;
+	e->Type = static_cast<TYPE>(TY);
+	e->arrive_time = T;
+	e->Health = H;
+	e->fire_power = Pow;
+	e->reload_period = Prd;
+	e->Region = static_cast<REGION>(R);
+	
+	e->Distance = 0;
+	e->fight_delay = -1;
+	e->kill_delay = -1;
+	e->next = NULL;
+
+	return e;
+}
