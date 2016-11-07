@@ -5,14 +5,12 @@
 *   Started 1-Nov-16, Delivered: -----
 */
 
-// header files and libraries
-#include <iostream>
-#include <fstream>
+// project header files
 #include "Graph.h"
 #include "Data.h"
 #include "Const.h"
 #include "Control.h"
-using namespace std;
+
 
 int main()
 {

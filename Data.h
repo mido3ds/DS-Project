@@ -51,7 +51,11 @@ namespace TOWER
 
 namespace ENEMY
 {
-	Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const int &R);
+	Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const REGION &R);
+
+	Enemy* Add(Tower* t, Enemy* &lastOne,
+		const int &S, const int &TY, const int &T, const int &H,
+		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
 }
 
 
@@ -95,7 +99,7 @@ struct Enemy
 	int ID;			//Each enemy has a unique ID (sequence number)
 	REGION Region;	//Region of this enemy
 	int Distance;	//Distance to the castle, initialized to 0 (Unactive)
-	double Health;	//Enemy health
+	int Health;		//Enemy health
 	TYPE Type;		//PVR, FITR, SHLD_FITR
 
 	// Modified Properities :-

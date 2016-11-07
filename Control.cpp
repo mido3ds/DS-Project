@@ -86,83 +86,25 @@ namespace Control
 				break;		// reached end of file
 
 			inFile >> TY >> T >> H >> Pow >> Prd >> Speed >> R;
-
-			// detect tower and add enemy to its list
+			
+			// add it to its list (Tower)
 			switch (R)
 			{
 				case 'A':
-				{
-					// first enemy in list, pointer e points at NULL
-					if (ea == NULL)
-					{
-						ea = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(A_REG));
-						TA.firstEnemy = ea;
-						TA.num_enemies++;
-						continue;
-					}
-
-					// make new node and link the last one with it
-					temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(A_REG));
-					ea->next = temp;
-					TA.num_enemies++;
+					ENEMY::Add(&TA, ea, S, TY, T, H, Pow, Prd, Speed, A_REG);
 					break;
-				}
 				case 'B':
-				{
-					// first enemy in list, pointer e points at NULL
-					if (eb == NULL)
-					{
-						eb = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(B_REG));
-						TB.firstEnemy = eb;
-						TB.num_enemies++;
-						continue;
-					}
-
-					// make new node and link the last one with it
-					temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(B_REG));
-					eb->next = temp;
-					TB.num_enemies++;
+					ENEMY::Add(&TB, eb, S, TY, T, H, Pow, Prd, Speed, B_REG);
 					break;
-				}
 				case 'C':
-				{
-					// first enemy in list, pointer e points at NULL
-					if (ec == NULL)
-					{
-						ec = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(C_REG));
-						TC.firstEnemy = ec;
-						TC.num_enemies++;
-						continue;
-					}
-
-					// make new node and link the last one with it
-					temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(C_REG));
-					ec->next = temp;
-					TC.num_enemies++;
+					ENEMY::Add(&TC, ec, S, TY, T, H, Pow, Prd, Speed, C_REG);
 					break;
-				}
 				case 'D':
-				{
-					// first enemy in list, pointer e points at NULL
-					if (ed == NULL)
-					{
-						ed = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(D_REG));
-						TD.firstEnemy = ed;
-						TD.num_enemies++;
-						continue;
-					}
-
-					// make new node and link the last one with it
-					temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, static_cast<int>(D_REG));
-					ed->next = temp;
-					TD.num_enemies++;
-					break;
-				}
-				default:
-					throw -1;
+					ENEMY::Add(&TD, ed, S, TY, T, H, Pow, Prd, Speed, D_REG);
 					break;
 			}
-		}
 
+		}
 	}
+
 }

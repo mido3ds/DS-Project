@@ -48,7 +48,7 @@ namespace TOWER
 namespace ENEMY
 {
     // returns address of enemy initialized with input variables
-    Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const int &R)
+    Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const REGION &R)
     {
         Enemy* e = new Enemy;
 
@@ -59,7 +59,7 @@ namespace ENEMY
         e->fire_power = Pow;
         e->reload_period = Prd;
 		e->speed = Speed;
-        e->Region = static_cast<REGION>(R);
+        e->Region = R;
         
         e->Distance = 0;
         e->fight_delay = -1;
@@ -69,6 +69,36 @@ namespace ENEMY
         return e;
     }
 
+	// adds enemy to the end of list 
+	// if is first one, it makes tower points at this enemy
+	Enemy* Add(Tower* t, Enemy* &lastOne,
+		const int &S, const int &TY, const int &T, const int &H,
+		const int &Pow, const int &Prd, const int &Speed, const REGION &R)
+	{
+		// check if tower is provided
+		if (!t)
+			throw -1;
 
+		Enemy* temp;
+
+		// if first one in list, 
+		// change the pointer of tower to point at it
+		if (lastOne == NULL)
+		{
+			lastOne = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);
+			t->firstEnemy = lastOne;		// tower points at enemy added
+			t->num_enemies++;		// new enemy added
+			return lastOne;
+		}
+
+		// it is not the first one
+
+		temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);		// new enemy at temp
+		lastOne->next = temp;		// previous node points at the next one
+		t->num_enemies++;		// new enemy added
+
+		lastOne = temp;		// update lastone
+		return lastOne;
+	}
 
 }
