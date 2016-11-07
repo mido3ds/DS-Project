@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "Const.h"
 using namespace std;
 /*  Data header file, contains all data structure to store data of castles and enemies
 *   and functions prototypes to read, write, modifie and delete them ...etc
@@ -15,21 +16,6 @@ using namespace std;
 *   -upload your edits to project to github and notifiy your group of them daily
 *   -write pseudo-code comments in function before making it, to make it easy to develop, read and modify the function later
 */
-
-/* constatnts  */
-#ifndef NULL
-#define NULL				nullptr
-#endif
-#define NUM_OF_TOWERS	4
-#define CmdWidth		150
-#define CmdHeight		50
-#define CastleWidth		30
-#define CastleLength	20
-#define CastleXStrt		(CmdWidth/2-(CastleWidth/2))
-#define CastleYStrt		(CmdHeight/2-(CastleLength/2))
-#define TowerWidth      7
-#define TowerLength     3
-#define EnemyShape		219  //ASCII code of enemy char shape 
 
 /* Enumerators */
 //Enemy types: Paver, Fighter, and Shielded Fighter
@@ -53,11 +39,20 @@ struct Tower;
 struct Castle;
 struct Enemy;
 Castle* newCastle();
-void ReadTower(const Tower* t, const int &TH, const int &N, const int &TP);
-Enemy* newEnemy(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &R);
+
+namespace TOWER
+{
+	void Initialize(Tower* t, const int &TH, const int &N, const int &TP);
+	void Fire(Tower* t, )
+}
+
+namespace ENEMY
+{
+Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &R);
+}
 
 
-/* Structures Implementation */
+/* Structures */
 struct Tower
 {
 	// Given Properities :-
@@ -116,57 +111,3 @@ struct Enemy
 	// Pointers
 	Enemy* next;		// initialize to NULL
 };
-
-
-/* functions implementation  */
-
-// returns new castle with its constants initialized
-Castle* newCastle()
-{
-	Castle* C = new Castle;
-	
-	C->Xstrt = CastleXStrt;
-	C->Ystrt = CastleYStrt;
-	C->W = CastleWidth;
-	C->L = CastleLength;
-
-	return C;
-}
-
-// initialize Tower 
-// input: Tower address, input line
-void ReadTower(Tower* t, const int &TH, const int &N, const int &TP)
-{
-	// check if NULL
-	if (!t)
-		throw -1;
-
-	t->Health = TH;
-	t->maxN_enemies = N;
-	t->fire_power = TP;
-
-	t->unpaved = 30;
-	t->firstEnemy = NULL;
-	t->num_enemies = 0;
-} 
-
-// returns address of enemy initialized with input variables
-Enemy* newEnemy(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &R)
-{
-	Enemy* e = new Enemy;
-
-	e->ID = S;
-	e->Type = static_cast<TYPE>(TY);
-	e->arrive_time = T;
-	e->Health = H;
-	e->fire_power = Pow;
-	e->reload_period = Prd;
-	e->Region = static_cast<REGION>(R);
-	
-	e->Distance = 0;
-	e->fight_delay = -1;
-	e->kill_delay = -1;
-	e->next = NULL;
-
-	return e;
-}
