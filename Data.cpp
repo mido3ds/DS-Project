@@ -43,6 +43,8 @@ namespace TOWER
 			t->unpaved = 30;
 			t->firstEnemy = NULL;
 			t->num_enemies = 0;
+			t->TW = TowerWidth;
+			t->TL = TowerLength;
 		}
     } 
 }
