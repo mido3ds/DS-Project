@@ -84,7 +84,7 @@ void DrawCastle(const Castle & C,int SimulationTime)
 			for(int i=0;i<TowerWidth;i++)
 				cout<<"=";
 			gotoxy(T1X +1, T1Y-1);
-			cout<<"T1"<<"("<<C.towers[0]->Health<<")";
+			cout<<"T1"<<"("<<C.towers[0].Health<<")";
 
 			gotoxy(C.Xstrt+C.W/4, C.Ystrt+C.L/4);
 			cout<<"(A)";
@@ -97,7 +97,7 @@ void DrawCastle(const Castle & C,int SimulationTime)
 			for(int i=0;i<TowerWidth+1;i++)
 				cout<<"=";
 			gotoxy(T2X +1, T2Y-1);
-			cout<<"T2"<<"("<<C.towers[1]->Health<<")";
+			cout<<"T2"<<"("<<C.towers[1].Health<<")";
 			gotoxy(C.Xstrt+(3*C.W/4), C.Ystrt+C.L/4);
 			cout<<"(B)";
 		}
@@ -109,7 +109,7 @@ void DrawCastle(const Castle & C,int SimulationTime)
 			for(int i=0;i<TowerWidth+1;i++)
 				cout<<"=";
 			gotoxy(T3X +1, T3Y+1);
-			cout<<"T3"<<"("<<C.towers[2]->Health<<")";
+			cout<<"T3"<<"("<<C.towers[2].Health<<")";
 			gotoxy(C.Xstrt+(3*C.W/4), C.Ystrt+(3*C.L/4)-1);
 			cout<<"(C)";
 
@@ -122,7 +122,7 @@ void DrawCastle(const Castle & C,int SimulationTime)
 			for(int i=0;i<TowerWidth;i++)
 				cout<<"=";
 			gotoxy(T4X +1, T4Y+1);
-			cout<<"T4"<<"("<<C.towers[3]->Health<<")";
+			cout<<"T4"<<"("<<C.towers[3].Health<<")";
 			gotoxy(C.Xstrt+(C.W/4), C.Ystrt+(3*C.L/4)-1);
 			cout<<"(D)";
 

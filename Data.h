@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "Const.h"
 using namespace std;
 /*  Data header file, contains all data structure to store data of castles and enemies
 *   and functions prototypes to read, write, modifie and delete them ...etc
@@ -16,34 +17,12 @@ using namespace std;
 *   -write pseudo-code comments in function before making it, to make it easy to develop, read and modify the function later
 */
 
-/* constatnts  */
-#ifndef NULL
-#define NULL				nullptr
-#endif
-#define NUM_OF_TOWERS	4
-#define CmdWidth		150
-#define CmdHeight		50
-#define CastleWidth		30
-#define CastleLength	20
-#define CastleXStrt		(CmdWidth/2-(CastleWidth/2))
-#define CastleYStrt		(CmdHeight/2-(CastleLength/2))
-#define TowerWidth      7
-#define TowerLength     3
-#define EnemyShape		219  //ASCII code of enemy char shape 
-
 /* Enumerators */
-
 //Enemy types: Paver, Fighter, and Shielded Fighter
 enum TYPE {
 	PVR,
 	FITR,
 	SHLD_FITR
-};
-
-// The state of the enemy: active, inactive, dead
-enum STATE
-{
-	ACTIVE, INACTIVE, DEAD
 };
 
 //The four regions: A, B, C , and D
@@ -55,13 +34,28 @@ enum REGION {
 };
 
 
-/* Structures Prototypes */
+/* Prototypes */
 struct Tower;
 struct Castle;
 struct Enemy;
 
-/* Structures Implementation */
+namespace CASTLE
+{
+	void Initialize(Castle &C);
+}
 
+namespace TOWER
+{
+	void Initialize(Tower* t, const int &TH, const int &N, const int &TP);
+}
+
+namespace ENEMY
+{
+	Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const int &R);
+}
+
+
+/* Structures */
 struct Tower
 {
 	// Given Properities :-
@@ -73,66 +67,44 @@ struct Tower
 
 	// from input:
 	int unpaved;		// the pos of first unpaved block, initialized to 30
-	const int fire_power;		
-	const int maxN_enemies; 		// max num of enemies it can fight
+	int fire_power;		
+	int maxN_enemies; 		// max num of enemies it can fight
 
 	// Pointers to enemies list
-	Enemy* next;		// initailized to first one in list after reading
+	Enemy* firstEnemy;		// initailized to NULL
 	int num_enemies;
-
-	// Constructor: initialize variables
-	Tower(int TH, int N, int TP): 
-		Health(TH), 
-		maxN_enemies(N),
-		fire_power(TP),
-
-		unpaved(30),
-		next(NULL),
-		num_enemies(0)
-	{}
 };
 
 struct Castle
 {
+	// Given Properities :-
 	//starting x,y
 	int Xstrt;
 	int Ystrt;
 	int W;	//width
 	int L;  //Height
-	const Tower* towers[NUM_OF_TOWERS];	//Castle has 4 towers
+	Tower towers[NUM_OF_TOWERS];	//Castle has 4 towers	
 
-	// Constructor: initialize variables
-	Castle(Tower* T0, Tower* T1, Tower* T2, Tower* T3):
-		Xstrt(CastleXStrt),
-		Ystrt(CastleYStrt),
-		W(CastleWidth),
-		L(CastleLength)
-	{
-		towers[0] = T0;
-		towers[1] = T1;
-		towers[2] = T2;
-		towers[3] = T3;
- 	}
-	
+	// Modified Properities :-
+	double c1, c2, c3;		// constants to calculate priority enemies
 };
 
 struct Enemy
 {
 	// Given Properities :-
-	const int ID;			//Each enemy has a unique ID (sequence number)
+	int ID;			//Each enemy has a unique ID (sequence number)
 	REGION Region;	//Region of this enemy
-	int Distance;	//Distance to the castle, initialized to 60 (the begining)
+	int Distance;	//Distance to the castle, initialized to 0 (Unactive)
 	double Health;	//Enemy health
-	const TYPE Type;		//PVR, FITR, SHLD_FITR
+	TYPE Type;		//PVR, FITR, SHLD_FITR
 
 	// Modified Properities :-
 
 	// from input:
-	const int arrive_time;
-	const int fire_power;		// if paver, it is num of metres it can pave
-	const int reload_period;
-
-	STATE state;		// initialized to ACTIVE
+	int arrive_time;
+	int fire_power;		// if paver, it is num of metres it can pave
+	int reload_period;
+	int speed;		// speed of object  (bonus) 
 
 	// to be calculated for output
 	int fight_delay;	// time of begin fighting - time of arrival
@@ -142,24 +114,4 @@ struct Enemy
 
 	// Pointers
 	Enemy* next;		// initialize to NULL
-
-	// constructor: initialize variables
-	Enemy(int S, int TY, int T, int H, int Pow, int Prd, int R): 
-		ID(S),
-		Type(static_cast<TYPE>(TY)),
-		arrive_time(T),
-		Health(H),
-		fire_power(Pow),
-		reload_period(Prd),
-		Region(static_cast<REGION>(R)),
-
-		Distance(60),
-		state(ACTIVE),
-		fight_delay(-1),
-		kill_delay(-1),
-		next(NULL)
-	{}
-
-	
 };
-
