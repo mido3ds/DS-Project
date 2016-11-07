@@ -59,11 +59,7 @@ namespace Control
 		// read tower data
 		int TH, N, TP;
 		inFile >> TH >> N >> TP;
-
-		TOWER::Initialize(&TA ,TH, N, TP);
-		TOWER::Initialize(&TB ,TH, N, TP);
-		TOWER::Initialize(&TC ,TH, N, TP);
-		TOWER::Initialize(&TD ,TH, N, TP);
+		TOWER::Initialize(C ,TH, N, TP);
 
 		// read constants
 		inFile >> C->c1 >> C->c2 >> C->c3;
@@ -87,7 +83,7 @@ namespace Control
 
 			inFile >> TY >> T >> H >> Pow >> Prd >> Speed >> R;
 			
-			// add it to its list (Tower)
+			// add to its list (Tower)
 			switch (R)
 			{
 				case 'A':

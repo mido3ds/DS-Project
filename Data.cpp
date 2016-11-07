@@ -27,21 +27,23 @@ namespace CASTLE
 
 namespace TOWER
 {
-    // initialize Tower 
-    // input: Tower address, input line
-    void Initialize(Tower* t, const int &TH, const int &N, const int &TP)
+    // initialize castle towers 
+    // input: castle, input line
+    void Initialize(Castle* c, const int &TH, const int &N, const int &TP)
     {
-        // check if NULL
-        if (!t)
-            throw -1;
+		// iterate through all towers
+		for (int i = 0; i < NUM_OF_TOWERS; i++)
+		{
+			Tower* t = &(c->towers[i]);		// point at tower
 
-        t->Health = TH;
-        t->maxN_enemies = N;
-        t->fire_power = TP;
+			t->Health = TH;
+			t->maxN_enemies = N;
+			t->fire_power = TP;
 
-        t->unpaved = 30;
-        t->firstEnemy = NULL;
-        t->num_enemies = 0;
+			t->unpaved = 30;
+			t->firstEnemy = NULL;
+			t->num_enemies = 0;
+		}
     } 
 }
 

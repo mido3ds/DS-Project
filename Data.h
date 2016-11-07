@@ -46,7 +46,7 @@ namespace CASTLE
 
 namespace TOWER
 {
-	void Initialize(Tower* t, const int &TH, const int &N, const int &TP);
+	void Initialize(Castle* c, const int &TH, const int &N, const int &TP);
 }
 
 namespace ENEMY
