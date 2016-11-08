@@ -46,7 +46,7 @@ namespace CASTLE
 
 namespace TOWER
 {
-	void Initialize(Castle* c, const int &TH, const int &N, const int &TP);
+	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
 }
 
 namespace ENEMY
@@ -56,6 +56,10 @@ namespace ENEMY
 	Enemy* Add(Tower* t, Enemy* &lastOne,
 		const int &S, const int &TY, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
+
+	void Move(Enemy&);
+
+	Enemy* AddToDead(Enemy* e);
 }
 
 

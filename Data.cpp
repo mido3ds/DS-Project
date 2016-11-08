@@ -29,12 +29,12 @@ namespace TOWER
 {
     // initialize castle towers 
     // input: castle, input line
-    void Initialize(Castle* c, const int &TH, const int &N, const int &TP)
+    void Initialize(Castle &c, const int &TH, const int &N, const int &TP)
     {
 		// iterate through all towers
 		for (int i = 0; i < NUM_OF_TOWERS; i++)
 		{
-			Tower* t = &(c->towers[i]);		// point at tower
+			Tower* t = &(c.towers[i]);		// point at tower
 
 			t->Health = TH;
 			t->maxN_enemies = N;
@@ -65,7 +65,7 @@ namespace ENEMY
 		e->speed = Speed;
         e->Region = R;
         
-        e->Distance = 0;
+        e->Distance = 60 + e->arrive_time * e->speed;
         e->fight_delay = -1;
         e->kill_delay = -1;
         e->next = NULL;
@@ -105,4 +105,33 @@ namespace ENEMY
 		return lastOne;
 	}
 
+	// moves enemy according to its speed
+	void Move(Enemy &e)
+	{
+		e.Distance -= e.speed;
+	}
+
+	// for phase1 only
+	// adds in dead list and returns pointer to first enemy in it
+	Enemy* AddToDead(Enemy* e)
+	{
+		static Enemy* list = NULL;
+		static Enemy* lastptr = list;
+
+		if (!e)
+			throw -1;
+
+		if (!list) {	// first one
+			list = e;
+			lastptr = e;
+			return list;
+		}
+
+
+		// add
+		lastptr->next = e;
+		lastptr = e;
+
+		return list;
+	}
 }
