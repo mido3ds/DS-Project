@@ -62,6 +62,8 @@ namespace ENEMY
 	Enemy* AddToDead(Enemy* e);
 
 	void Print(const Enemy &e);
+
+	void Swap(Enemy* &a, Enemy* &b);
 }
 
 namespace SHIELDED

@@ -164,6 +164,14 @@ namespace ENEMY
 		cout << ", Health: " << e.Health;
 		cout << ", Arrival Time: " << e.arrive_time << endl;
 	}
+
+	// takes two pointers at enemies objects and swaps them
+	void Swap(Enemy* &a, Enemy* &b)
+	{
+		Enemy* temp = a;
+		a = b;
+		b = temp;
+	}
 }
 
 namespace SHIELDED

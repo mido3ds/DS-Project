@@ -14,7 +14,7 @@
 #include <fstream>
 #include "Data.h"
 #include "Const.h"
-#include "Graph.h"
+//#include "Graph.h"
 using namespace std;
 
 /*	Functions Prototypes  */
@@ -25,4 +25,5 @@ namespace control
 	void Read(Castle&);
 	void Phase1();
 	void SortKilled(Enemy** arr, const int &size);
+	REGION GetRegion(const char q);
 } 

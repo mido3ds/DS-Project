@@ -41,6 +41,26 @@ namespace control
 		}
 	}
 
+	// returns REGION depending on text (char)
+	// takes letters from a - d upper or lower
+	REGION GetRegion(const char q)
+	{
+		switch (toupper(q))
+		{
+			case 'A':
+				return A_REG;
+			case 'B':
+				return B_REG;
+			case 'C':
+				return C_REG;
+			case 'D':
+				return D_REG;
+			default:
+				throw -1;
+				break;
+		}
+	}
+
 	// read all input from input.txt 
 	// initializes all towers, enemies and castle
 	// adds enemies nodes to enemies list of tower 
@@ -69,9 +89,10 @@ namespace control
 
 		// read enemies
 		int S, TY, T, H, Pow, Prd, Speed; char R;		// variables to read at one line as specified
-		Enemy *ea, *eb, *ec, *ed, *temp;	// pointers at end of enemies list, temp for the current node being read
-		Enemy *sa, *sb, *sc, *sd;
-		temp = ea = eb = ec = ed = NULL;
+		Enemy *ea, *eb, *ec, *ed;	// pointers at end of normal enemies list
+		Enemy *sa, *sb, *sc, *sd;	// pointers at end of shielded enemies list
+		// initialize them to NULL
+		ea = eb = ec = ed = NULL;
 		sa = sb = sc = sd = NULL;
 
 		// iterate through all lines untill end of file (-1)
@@ -131,7 +152,7 @@ namespace control
 		}
 	}
 
-	/*
+	/*		! phase1 is done !
 		1- File loading function. The function that reads input file to: (done)
 			a.  Load Towers data
 			b.  Load constants values
@@ -143,11 +164,11 @@ namespace control
 			﻿c.  At each time step do the following
 				i.  Move active enemies from inactive list to active list	(done)
 				ii.  Pick at most 4 random active enemies to kill: Randomly pick two from high
-				priority active enemies and randomly pick two from normal active enemies.
+				priority active enemies and randomly pick two from normal active enemies. 	(done)
 				iii.  Remove killed enemies from the list(s).	(done)
 				iv.  For each region, print
-					1.  Total number of active enemies and information of each one of them.
-					2.  Total number of killed enemies and information of each one of them.
+					1.  Total number of active enemies and information of each one of them.		(done)
+					2.  Total number of killed enemies and information of each one of them.		(done)
 					The killed enemies have to be printed ordered by enemy health.
 		*/
 
@@ -300,22 +321,9 @@ namespace control
 			throw -1;
 
 		for (int i = 0; i < size; i++)
-		{
-			Enemy &e = *arr[i];
-			
 			for (int j = i + 1; j < size; j++)
-			{
-				Enemy &e2 = *arr[j];
-
-				if (e.Health > e2.Health)
-				{
-					// swap
-					Enemy *temp = &e;
-					e = e2;
-					e2 = *temp;
-				}
-			}
+				if (arr[i]->Health > arr[j]->Health)
+					ENEMY::Swap(arr[i], arr[j]);
 				
-		}
 	}
 }
