@@ -69,7 +69,7 @@ namespace ENEMY
 namespace SHIELDED
 {
 	Enemy* Add(Tower* t, Enemy* &lastOne,
-		const int &S, const int &TY, const int &T, const int &H,
+		const int &S, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
 }
 
