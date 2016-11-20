@@ -41,26 +41,6 @@ namespace control
 		}
 	}
 
-	// returns REGION depending on text (char)
-	// takes letters from a - d upper or lower
-	REGION GetRegion(const char q)
-	{
-		switch (toupper(q))
-		{
-			case 'A':
-				return A_REG;
-			case 'B':
-				return B_REG;
-			case 'C':
-				return C_REG;
-			case 'D':
-				return D_REG;
-			default:
-				throw -1;
-				break;
-		}
-	}
-
 	// read all input from input.txt 
 	// initializes all towers, enemies and castle
 	// adds enemies nodes to enemies list of tower 
@@ -112,26 +92,26 @@ namespace control
 			// add shielded enemies to its list, and normal enemies to its list
 			if (TY == SHLD_FITR)
 			{
-				// add to its list 
+				// add to shielded list 
 				switch (R)
 				{
 					case 'A':
-						SHIELDED::Add(&TA, sa, S, TY, T, H, Pow, Prd, Speed, A_REG);
+						SHIELDED::Add(&TA, sa, S, T, H, Pow, Prd, Speed, A_REG);
 						break;
 					case 'B':
-						SHIELDED::Add(&TB, sb, S, TY, T, H, Pow, Prd, Speed, B_REG);
+						SHIELDED::Add(&TB, sb, S, T, H, Pow, Prd, Speed, B_REG);
 						break;
 					case 'C':
-						SHIELDED::Add(&TC, sc, S, TY, T, H, Pow, Prd, Speed, C_REG);
+						SHIELDED::Add(&TC, sc, S, T, H, Pow, Prd, Speed, C_REG);
 						break;
 					case 'D':
-						SHIELDED::Add(&TD, sd, S, TY, T, H, Pow, Prd, Speed, D_REG);
+						SHIELDED::Add(&TD, sd, S, T, H, Pow, Prd, Speed, D_REG);
 						break;
 				}
 			}
-			else // fighter or paver enemy
+			else // normal enemy
 			{
-				// add to its list 
+				// add to normal list 
 				switch (R)
 				{
 					case 'A':

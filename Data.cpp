@@ -179,7 +179,7 @@ namespace SHIELDED
 	// adds shielded enemy to the end of list 
 	// if is first one, it makes tower points at this enemy
 	Enemy* Add(Tower* t, Enemy* &lastOne,
-		const int &S, const int &TY, const int &T, const int &H,
+		const int &S, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R)
 	{
 		// check if tower is provided
@@ -192,14 +192,14 @@ namespace SHIELDED
 		// change the pointer of tower to point at it
 		if (lastOne == NULL)
 		{
-			lastOne = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);
+			lastOne = ENEMY::Initialize(S, SHLD_FITR, T, H, Pow, Prd, Speed, R);
 			t->firstShielded = lastOne;		// tower points at enemy added
 			t->num_enemies++;		// new enemy added
 			return lastOne;
 		}
 
 		// it is not the first one
-		temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);		// new enemy at temp
+		temp = ENEMY::Initialize(S, SHLD_FITR, T, H, Pow, Prd, Speed, R);		// new enemy at temp
 		lastOne->next = temp;		// previous node points at the next one
 		t->num_enemies++;		// new enemy added
 
