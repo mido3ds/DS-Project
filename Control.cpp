@@ -157,14 +157,17 @@ namespace control
 		Castle c;
 		Read (c);
 
-		for (int time = 1; time < 2; time++)
+		for (int time = 1; time < 3; time++)
 		{
-			cout << "At Time: " << time << endl;
+			cout << "-----------------------";
+			cout << "Time = " << time << 's';
+			cout << "------------------------" << endl;
 
 			// do the same for all the Towers
 			for (int i = 0; i < 4; i++)
 			{
-				cout << "At Region " << i + 1 << ":\n";
+				cout << "========= ";
+				cout << "Region " << (char)('A' + i) << ":\n";
 
 
 				// to store killed enemies
@@ -173,6 +176,10 @@ namespace control
 
 				// alias for the current tower
 				Tower &T = c.towers[i];
+
+				cout << "Active Enemies: \n";
+				
+				bool active_exists = false;			// if still false, means no active enemies are found yet, so print None		
 
 				// normal enemies:
 				// iterate through all enemies
@@ -213,6 +220,7 @@ namespace control
 					{
 						// print him as active but not killed 
 						ENEMY::Print(*e);
+						active_exists = true;
 					}
 
 
@@ -262,26 +270,31 @@ namespace control
 					{
 						// print him as active but not killed 
 						ENEMY::Print(*e);
+						active_exists = true;
 					}
 
 					// go to the next enemy
 					temp = e;
 					e = e->next;
 				}
+
+				// if there is no active enemies to print , print none
+				if (!active_exists)
+					cout << "NONE\n";
 				
 
 				// sort the array of killed enemies in descend order of their health
 				SortKilled(killed, killcount);
 
 				// print killed 
-				cout << "Killed Enemies: ";
+				cout << "Killed Enemies: \n";
 				for (int i = 0; i < killcount; i++)
 					ENEMY::Print(*killed[i]);
 
 				// if no one is killed, print none
 				if (killcount == 0)
-					cout << "NONE";
-				
+					cout << "NONE\n";
+
 				cout << endl;
 
 			}
