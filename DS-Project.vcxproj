@@ -19,12 +19,16 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{037DF17C-24F5-4F65-BE23-82940B17B777}</ProjectGuid>

@@ -156,9 +156,9 @@ namespace control
 		Castle c;
 		Read (c);
 
-		for (int time = 0;; time++)
+		for (int time = 1; time < 2; time++)
 		{
-			cout << "Time: " << time << endl;
+			cout << "At Time: " << time << endl;
 
 			// do the same for all the Towers
 			for (int i = 0; i < 4; i++)
@@ -255,58 +255,66 @@ namespace control
 						continue;
 					}
 
+					// active but cannot kill him
+					if (e->Distance < 60 && killcount > 3)
+					{
+						// print him as active but not killed 
+						ENEMY::Print(*e);
+					}
+
 					// go to the next enemy
 					temp = e;
 					e = e->next;
 				}
+				
 
+				// sort the array of killed enemies in descend order of their health
+				SortKilled(killed, killcount);
 
+				// print killed 
+				cout << "Killed Enemies: ";
+				for (int i = 0; i < killcount; i++)
+					ENEMY::Print(*killed[i]);
 
-
+				// if no one is killed, print none
+				if (killcount == 0)
+					cout << "NONE";
+				
+				cout << endl;
 
 			}
+
+			cout << endl;
+		}
+
+		cout << endl;
+	}
+
+	// used only Phase1 to sort the array of killed enemies before they are printed
+	// sorte depending on their health from minimum to maximum health
+	// using Selection Sort of O(n^2)
+	void SortKilled(Enemy** arr, const int &size)
+	{
+		if (!arr || size < 0)
+			throw -1;
+
+		for (int i = 0; i < size; i++)
+		{
+			Enemy &e = *arr[i];
+			
+			for (int j = i + 1; j < size; j++)
+			{
+				Enemy &e2 = *arr[j];
+
+				if (e.Health > e2.Health)
+				{
+					// swap
+					Enemy *temp = &e;
+					e = e2;
+					e2 = *temp;
+				}
+			}
+				
 		}
 	}
-	//void Phase1()
-	//{
-	//	SetWindow();
-	//	Castle c; 
-	//	Read(c);
-
-	//	// list for dead enemies
-	//	Enemy* dead_List = NULL;
-
-	//	// iterate one time unit, test
-	//	for (int time = 1; time < 2; time++)
-	//	{
-	//		
-	//		// do the same for all towers
-	//		for (REGION i = A_REG; i <= D_REG; i++)
-	//		{
-	//			Tower &T = c.towers[i];		// rename the tower
-	//			
-	//			// iterate through all enemies in this tower
-	//			Enemy* prev = NULL;
-	//			Enemy* e = T.firstEnemy;
-	//			while (e) {
-	//				using namespace ENEMY;
-
-	//				if (e->Distance > T.unpaved)
-	//					Move(*e, T);
-
-	//				if (e->Health == 0)		// dead, kill him, add to dead list 
-	//					dead_List = AddToDead(e);
-	//				
-	//				//if (e->Type != PVR && (time - e->arrive_time + 1) % e->reload_period == 1)
-	//					//Fire(e, &T) 
-
-
-	//			}
-	//		}
-
-	//		DrawCastle(c, time);
-	//	}
-	//}
-
-
 }

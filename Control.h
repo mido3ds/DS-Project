@@ -24,4 +24,5 @@ namespace control
 	Mode GetMode();
 	void Read(Castle&);
 	void Phase1();
+	void SortKilled(Enemy** arr, const int &size);
 } 
