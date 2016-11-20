@@ -16,4 +16,6 @@
 #define TowerWidth      7
 #define TowerLength     3
 #define EnemyShape		219  //ASCII code of enemy char shape 
+
 #define SECOND          1000			// in milliseconds
+#define MIN_DISTANCE_FROM_CASTLE    2

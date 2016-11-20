@@ -105,12 +105,17 @@ namespace ENEMY
 		return lastOne;
 	}
 
-	// moves enemy according to its speed
-	void Move(Enemy &e)
+	// moves enemy according to its speed and unpaved area
+	// takes enemy to move, tower to detect if possible to move depending on unpaved are
+	void Move(Enemy &e, const Tower &T)
 	{
-		// don't let enemy get iside tower
-		if (e.Distance > 30)
-			e.Distance -= e.speed;
+		// chek if it can move
+		if (e.Distance > T.unpaved)
+		{
+			// don't let enemy get iside tower
+			if (e.Distance > MIN_DISTANCE_FROM_CASTLE)
+				e.Distance -= e.speed;
+		}
 	}
 
 	// for phase1 only

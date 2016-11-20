@@ -135,11 +135,11 @@ namespace control
 		Enemy* dead_List = NULL;
 
 		// iterate one time unit, test
-		for (int time = 1; time < 2;time++)
+		for (int time = 1; time < 2; time++)
 		{
 			
 			// do the same for all towers
-			for (int i = 0; i < NUM_OF_TOWERS; i++)
+			for (REGION i = A_REG; i <= D_REG; i++)
 			{
 				Tower &T = c.towers[i];		// rename the tower
 				
@@ -150,7 +150,7 @@ namespace control
 					using namespace ENEMY;
 
 					if (e->Distance > T.unpaved)
-						Move(*e);
+						Move(*e, T);
 
 					if (e->Health == 0)		// dead, kill him, add to dead list 
 						dead_List = AddToDead(e);
