@@ -80,11 +80,6 @@ namespace ENEMY
 		const int &S, const int &TY, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R)
 	{
-		// check if it is shielded to call its own Add function
-		if (static_cast<Type>(TY) == SHLD_FITR)
-			return SHIELDED::Add(t, &lastOne, &S, &TY, &T, &H, &Pow, &Prd, &Speed, &R);
-
-		
 		// check if tower is provided
 		if (!t)
 			throw -1;
@@ -123,7 +118,7 @@ namespace ENEMY
 		}
 	}
 
-	// for phase1 only
+	// for phase1 only, we won't use it
 	// adds in dead list and returns pointer to first enemy in it
 	Enemy* AddToDead(Enemy* e)
 	{
@@ -145,6 +140,26 @@ namespace ENEMY
 		lastptr = e;
 
 		return list;
+	}
+
+	// print enemy data to screen
+	// it prints id, type health and arrive time 
+	void Print( const Enemy &e)
+	{
+		cout << "ID: " << e.ID << ' ' << "Type: ";
+		switch (e.Type)
+		{
+			case FITR:
+				cout << "Fighter ";
+				break;
+			case PVR:
+				cout << "Paver ";
+				break;
+			default:
+				cout << "Shielded ";
+				break;
+		}
+		cout << "Health: " << e.Health << ' ' << "Arrival Time: " << e.arrive_time << endl;
 	}
 }
 

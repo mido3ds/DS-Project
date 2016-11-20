@@ -57,9 +57,11 @@ namespace ENEMY
 		const int &S, const int &TY, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
 
-	void Move(Enemy&);
+	void Move(Enemy &e, const Tower &T);
 
 	Enemy* AddToDead(Enemy* e);
+
+	void Print(const Enemy &e);
 }
 
 namespace SHIELDED

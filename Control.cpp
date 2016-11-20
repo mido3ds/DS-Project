@@ -70,7 +70,9 @@ namespace control
 		// read enemies
 		int S, TY, T, H, Pow, Prd, Speed; char R;		// variables to read at one line as specified
 		Enemy *ea, *eb, *ec, *ed, *temp;	// pointers at end of enemies list, temp for the current node being read
+		Enemy *sa, *sb, *sc, *sd;
 		temp = ea = eb = ec = ed = NULL;
+		sa = sb = sc = sd = NULL;
 
 		// iterate through all lines untill end of file (-1)
 		while (true)
@@ -86,21 +88,44 @@ namespace control
 
 			inFile >> TY >> T >> H >> Pow >> Prd >> Speed >> R;
 			
-			// add to its list (Tower)
-			switch (R)
+			// add shielded enemies to its list, and normal enemies to its list
+			if (TY == SHLD_FITR)
 			{
-				case 'A':
-					ENEMY::Add(&TA, ea, S, TY, T, H, Pow, Prd, Speed, A_REG);
-					break;
-				case 'B':
-					ENEMY::Add(&TB, eb, S, TY, T, H, Pow, Prd, Speed, B_REG);
-					break;
-				case 'C':
-					ENEMY::Add(&TC, ec, S, TY, T, H, Pow, Prd, Speed, C_REG);
-					break;
-				case 'D':
-					ENEMY::Add(&TD, ed, S, TY, T, H, Pow, Prd, Speed, D_REG);
-					break;
+				// add to its list 
+				switch (R)
+				{
+					case 'A':
+						SHIELDED::Add(&TA, sa, S, TY, T, H, Pow, Prd, Speed, A_REG);
+						break;
+					case 'B':
+						SHIELDED::Add(&TB, sb, S, TY, T, H, Pow, Prd, Speed, B_REG);
+						break;
+					case 'C':
+						SHIELDED::Add(&TC, sc, S, TY, T, H, Pow, Prd, Speed, C_REG);
+						break;
+					case 'D':
+						SHIELDED::Add(&TD, sd, S, TY, T, H, Pow, Prd, Speed, D_REG);
+						break;
+				}
+			}
+			else // fighter or paver enemy
+			{
+				// add to its list 
+				switch (R)
+				{
+					case 'A':
+						ENEMY::Add(&TA, ea, S, TY, T, H, Pow, Prd, Speed, A_REG);
+						break;
+					case 'B':
+						ENEMY::Add(&TB, eb, S, TY, T, H, Pow, Prd, Speed, B_REG);
+						break;
+					case 'C':
+						ENEMY::Add(&TC, ec, S, TY, T, H, Pow, Prd, Speed, C_REG);
+						break;
+					case 'D':
+						ENEMY::Add(&TD, ed, S, TY, T, H, Pow, Prd, Speed, D_REG);
+						break;
+				}
 			}
 
 		}
@@ -125,46 +150,163 @@ namespace control
 					2.  Total number of killed enemies and information of each one of them.
 					The killed enemies have to be printed ordered by enemy health.
 		*/
+
 	void Phase1()
 	{
-		SetWindow();
-		Castle c; 
-		Read(c);
+		Castle c;
+		Read (c);
 
-		// list for dead enemies
-		Enemy* dead_List = NULL;
-
-		// iterate one time unit, test
-		for (int time = 1; time < 2; time++)
+		for (int time = 0;; time++)
 		{
-			
-			// do the same for all towers
-			for (REGION i = A_REG; i <= D_REG; i++)
+			cout << "Time: " << time << endl;
+
+			// do the same for all the Towers
+			for (int i = 0; i < 4; i++)
 			{
-				Tower &T = c.towers[i];		// rename the tower
-				
-				// iterate through all enemies in this tower
-				Enemy* prev = NULL;
+				cout << "At Region " << i + 1 << ":\n";
+
+
+				// to store killed enemies
+				int killcount = 0;
+				Enemy** killed = new Enemy*[4];	// array of pointers to killed enemies
+
+				// alias for the current tower
+				Tower &T = c.towers[i];
+
+				// normal enemies:
+				// iterate through all enemies
 				Enemy* e = T.firstEnemy;
-				while (e) {
-					using namespace ENEMY;
+				Enemy* temp = NULL;
+				while(e)
+				{
+					ENEMY::Move(*e, T);
 
-					if (e->Distance > T.unpaved)
-						Move(*e, T);
+					// check if enemy is active to kill him later
+					if (e->Distance < 60 && killcount < 2)
+					{
+						killed[killcount++] = e;
 
-					if (e->Health == 0)		// dead, kill him, add to dead list 
-						dead_List = AddToDead(e);
-					
-					//if (e->Type != PVR && (time - e->arrive_time + 1) % e->reload_period == 1)
-						//Fire(e, &T) 
+						// special case: when enemy is first one
+						if (temp == NULL)
+						{
+							T.firstEnemy = e->next;
+
+							// traverse to next enemy
+							e = T.firstEnemy;
+						}
+						else 
+						{
+							// isolate it from the list
+							temp->next = e->next;
+
+							// traverse to next enemy
+							e = temp->next;
+						}
+
+						e->next = NULL;
+						continue;
+					}
+
+					// active but cannot kill him
+					if (e->Distance < 60 && killcount >= 2)
+					{
+						// print him as active but not killed 
+						ENEMY::Print(*e);
+					}
 
 
+					// go to the next enemy
+					temp = e;
+					e = e->next;
 				}
-			}
 
-			DrawCastle(c, time);
+
+				// shielded enemies:
+				// iterate through all enemies
+				e = T.firstShielded;
+				temp = NULL;
+				while(e)
+				{
+					ENEMY::Move(*e, T);
+
+					// check if enemy is active to kill him later
+					if (e->Distance < 60 && killcount < 4)
+					{
+						killed[killcount++] = e;
+
+						// special case: when enemy is first one
+						if (temp == NULL)
+						{
+							T.firstShielded = e->next;
+
+							// traverse to next enemy
+							e = T.firstShielded;
+						}
+						else 
+						{
+							// isolate it from the list
+							temp->next = e->next;
+
+							// traverse to next enemy
+							e = temp->next;
+						}
+
+						e->next = NULL;
+						continue;
+					}
+
+					// go to the next enemy
+					temp = e;
+					e = e->next;
+				}
+
+
+
+
+
+			}
 		}
 	}
+	//void Phase1()
+	//{
+	//	SetWindow();
+	//	Castle c; 
+	//	Read(c);
+
+	//	// list for dead enemies
+	//	Enemy* dead_List = NULL;
+
+	//	// iterate one time unit, test
+	//	for (int time = 1; time < 2; time++)
+	//	{
+	//		
+	//		// do the same for all towers
+	//		for (REGION i = A_REG; i <= D_REG; i++)
+	//		{
+	//			Tower &T = c.towers[i];		// rename the tower
+	//			
+	//			// iterate through all enemies in this tower
+	//			Enemy* prev = NULL;
+	//			Enemy* e = T.firstEnemy;
+	//			while (e) {
+	//				using namespace ENEMY;
+
+	//				if (e->Distance > T.unpaved)
+	//					Move(*e, T);
+
+	//				if (e->Health == 0)		// dead, kill him, add to dead list 
+	//					dead_List = AddToDead(e);
+	//				
+	//				//if (e->Type != PVR && (time - e->arrive_time + 1) % e->reload_period == 1)
+	//					//Fire(e, &T) 
+
+
+	//			}
+	//		}
+
+	//		DrawCastle(c, time);
+	//	}
+	//}
 
 
 }
