@@ -62,6 +62,13 @@ namespace ENEMY
 	Enemy* AddToDead(Enemy* e);
 }
 
+namespace SHIELDED
+{
+	Enemy* Add(Tower* t, Enemy* &lastOne,
+		const int &S, const int &TY, const int &T, const int &H,
+		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
+}
+
 
 /* Structures */
 struct Tower
@@ -80,7 +87,8 @@ struct Tower
 
 	// Pointers to enemies list
 	Enemy* firstEnemy;		// initailized to NULL
-	int num_enemies;
+	Enemy* firstShielded;	// initialized to NULL
+	int num_enemies;		// increamented by one when adding enemy, referes to all enemies
 };
 
 struct Castle

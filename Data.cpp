@@ -42,6 +42,7 @@ namespace TOWER
 
 			t->unpaved = 30;
 			t->firstEnemy = NULL;
+			t->firstShielded = NULL;
 			t->num_enemies = 0;
 			t->TW = TowerWidth;
 			t->TL = TowerLength;
@@ -79,6 +80,11 @@ namespace ENEMY
 		const int &S, const int &TY, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R)
 	{
+		// check if it is shielded to call its own Add function
+		if (static_cast<Type>(TY) == SHLD_FITR)
+			return SHIELDED::Add(t, &lastOne, &S, &TY, &T, &H, &Pow, &Prd, &Speed, &R);
+
+		
 		// check if tower is provided
 		if (!t)
 			throw -1;
@@ -96,7 +102,6 @@ namespace ENEMY
 		}
 
 		// it is not the first one
-
 		temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);		// new enemy at temp
 		lastOne->next = temp;		// previous node points at the next one
 		t->num_enemies++;		// new enemy added
@@ -140,5 +145,39 @@ namespace ENEMY
 		lastptr = e;
 
 		return list;
+	}
+}
+
+namespace SHIELDED
+{
+	// adds shielded enemy to the end of list 
+	// if is first one, it makes tower points at this enemy
+	Enemy* Add(Tower* t, Enemy* &lastOne,
+		const int &S, const int &TY, const int &T, const int &H,
+		const int &Pow, const int &Prd, const int &Speed, const REGION &R)
+	{
+		// check if tower is provided
+		if (!t)
+			throw -1;
+
+		Enemy* temp;
+
+		// if first one in list, 
+		// change the pointer of tower to point at it
+		if (lastOne == NULL)
+		{
+			lastOne = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);
+			t->firstShielded = lastOne;		// tower points at enemy added
+			t->num_enemies++;		// new enemy added
+			return lastOne;
+		}
+
+		// it is not the first one
+		temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);		// new enemy at temp
+		lastOne->next = temp;		// previous node points at the next one
+		t->num_enemies++;		// new enemy added
+
+		lastOne = temp;		// update lastone
+		return lastOne;
 	}
 }
