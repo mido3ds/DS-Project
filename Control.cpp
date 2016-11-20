@@ -107,19 +107,19 @@ namespace control
 	}
 
 	/*
-		1- File loading function. The function that reads input file to:
+		1- File loading function. The function that reads input file to: (done)
 			a.  Load Towers data
 			b.  Load constants values
 			c.  Create and populate inactive enemies list.
 
 		2- Simple Simulator function. This function should
-			a.  Perform any needed initializations
-			b.  Call file loading function
+			a.  Perform any needed initializations	(done)
+			b.  Call file loading function	(done)	
 			﻿c.  At each time step do the following
-				i.  Move active enemies from inactive list to active list
+				i.  Move active enemies from inactive list to active list	(done)
 				ii.  Pick at most 4 random active enemies to kill: Randomly pick two from high
 				priority active enemies and randomly pick two from normal active enemies.
-				iii.  Remove killed enemies from the list(s).
+				iii.  Remove killed enemies from the list(s).	(done)
 				iv.  For each region, print
 					1.  Total number of active enemies and information of each one of them.
 					2.  Total number of killed enemies and information of each one of them.

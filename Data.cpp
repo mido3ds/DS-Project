@@ -108,7 +108,9 @@ namespace ENEMY
 	// moves enemy according to its speed
 	void Move(Enemy &e)
 	{
-		e.Distance -= e.speed;
+		// don't let enemy get iside tower
+		if (e.Distance > 30)
+			e.Distance -= e.speed;
 	}
 
 	// for phase1 only
