@@ -293,7 +293,7 @@ namespace control
 
 	// used only Phase1 to sort the array of killed enemies before they are printed
 	// sorte depending on their health from minimum to maximum health
-	// using Selection Sort of O(n^2)
+	// using Selection Sort, complexity of O(n^2)
 	void SortKilled(Enemy** arr, const int &size)
 	{
 		if (!arr || size < 0)

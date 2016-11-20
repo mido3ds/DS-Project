@@ -9,7 +9,10 @@ using namespace control;
 
 int main()
 {
-    Phase1();
+    // Phase1();
+    int s = 4, s2 = 0, s3 = 124, s4 = 1241, s5 = 123, s6 = 23, s7 = 2;
+    Enemy* e = ENEMY::Initialize(s, s2, s3, s4,s5, s6, s7, A_REG);
+    ENEMY::Print(*e);
 }
 
 // int main()

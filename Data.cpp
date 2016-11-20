@@ -144,22 +144,25 @@ namespace ENEMY
 
 	// print enemy data to screen
 	// it prints id, type health and arrive time 
-	void Print( const Enemy &e)
+	void Print(const Enemy &e)
 	{
-		cout << "ID: " << e.ID << ' ' << "Type: ";
+		cout << "-Enemy ID: " << e.ID;
+		cout << ", Type: ";
 		switch (e.Type)
 		{
 			case FITR:
-				cout << "Fighter ";
+				cout << "Fighter";
 				break;
 			case PVR:
-				cout << "Paver ";
+				cout << "Paver";
 				break;
 			default:
-				cout << "Shielded ";
+				cout << "Shielded";
 				break;
 		}
-		cout << "Health: " << e.Health << ' ' << "Arrival Time: " << e.arrive_time << endl;
+
+		cout << ", Health: " << e.Health;
+		cout << ", Arrival Time: " << e.arrive_time << endl;
 	}
 }
 
