@@ -190,6 +190,7 @@ namespace control
 						if (temp == NULL)
 						{
 							T.firstEnemy = e->next;
+							e->next = NULL;
 
 							// traverse to next enemy
 							e = T.firstEnemy;
@@ -198,12 +199,11 @@ namespace control
 						{
 							// isolate it from the list
 							temp->next = e->next;
+							e->next = NULL;
 
 							// traverse to next enemy
 							e = temp->next;
 						}
-
-						e->next = NULL;
 						continue;
 					}
 
@@ -237,7 +237,9 @@ namespace control
 						// special case: when enemy is first one
 						if (temp == NULL)
 						{
+							// isolate it from the list
 							T.firstShielded = e->next;
+							e->next = NULL;
 
 							// traverse to next enemy
 							e = T.firstShielded;
@@ -246,12 +248,11 @@ namespace control
 						{
 							// isolate it from the list
 							temp->next = e->next;
+							e->next = NULL;
 
 							// traverse to next enemy
 							e = temp->next;
 						}
-
-						e->next = NULL;
 						continue;
 					}
 
