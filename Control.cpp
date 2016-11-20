@@ -106,7 +106,7 @@ namespace control
 		}
 	}
 
-	/*﻿
+	/*
 		1- File loading function. The function that reads input file to:
 			a.  Load Towers data
 			b.  Load constants values
@@ -134,7 +134,7 @@ namespace control
 		// list for dead enemies
 		Enemy* dead_List = NULL;
 
-
+		// iterate one time unit, test
 		for (int time = 1; time < 2;time++)
 		{
 			
