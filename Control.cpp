@@ -135,8 +135,7 @@ namespace control
 
 namespace Phase1
 {
-	using namespace control;
-/*		! phase1 is done !
+	/*		! phase1 is done !
 		1- File loading function. The function that reads input file to: (done)
 			a.  Load Towers data
 			b.  Load constants values
@@ -156,12 +155,17 @@ namespace Phase1
 					The killed enemies have to be printed ordered by enemy health.
 		*/
 
+	using namespace control;
+
+	/* the interface */
 	void Start()
 	{
 		Castle c;
 		Read (c);
 		_Timer(c);
 	}
+
+	/* private functions: */
 
 	// sort the array of killed enemies before they are printed
 	// sorte depending on their health from minimum to maximum health
@@ -195,16 +199,13 @@ namespace Phase1
 	// all what is done in every second
 	void _Timer(Castle &c)
 	{
-		// assume we don't have inactive enemies, until we can find anyone 
-		bool finished = false;
-
 		// do the same each time step
 		// stops when all enemies in all regions are killed 
-		for (int time = 1 ; !finished; time++)
+		for (int time = 1 ;; time++)
 		{
 			_PrintTime(time);
 
-			finished = true;
+			bool finished = true;
 
 			// do the same for all the Regions
 			for (int i = A_REG; i <= D_REG; i++)
@@ -215,13 +216,14 @@ namespace Phase1
 				int killcount = 0;
 				Enemy** killed = new Enemy*[4];	// array of pointers to killed enemies
 
+				// store num of active enemies
+				int activecount = 0;
+
 				// alias for the current tower
 				Tower &T = c.towers[i];
 
 				cout << "Active Enemies: \n";
 				
-				bool active_exists = false;			// if still false, means no active enemies are found yet, so print None		
-
 				// normal enemies:
 				// iterate through all enemies
 				Enemy* e = T.firstEnemy;
@@ -263,6 +265,7 @@ namespace Phase1
 							// print him as active but not killed 
 							ENEMY::Print(*e);
 							active_exists = true;
+							activecount++;
 						}
 					}
 					else 		// inactive
@@ -318,6 +321,7 @@ namespace Phase1
 							// print him as active but not killed 
 							ENEMY::Print(*e);
 							active_exists = true;
+							activecount++;
 						}
 					}
 					else 		// inactive
@@ -329,8 +333,10 @@ namespace Phase1
 				}
 
 				// if there is no active enemies to print , print none
-				if (!active_exists)
+				if (!activecount)
 					cout << "NONE\n";
+				else	// print the num
+					cout << "Total Num = " << activecount << '\n';
 				
 
 				// sort the array of killed enemies in ascending order of their health
@@ -344,12 +350,20 @@ namespace Phase1
 				// if no one is killed, print none
 				if (killcount == 0)
 					cout << "NONE\n";
+				else // print the num of them
+					cout << "Total Num = " << --killcount << '\n'; 
 
 				cout << endl;
 
 			}
 
 			cout << endl;
+
+			if (finished)
+			{
+				cout << "Finished Killing all at Time: " << time << '\n';
+				return 
+			}
 		}
 
 

@@ -18,6 +18,6 @@ using namespace control;
 #ifndef _TEST_
 int main()
 {
-    Phase1();
+    Phase1::Start();
 }
 #endif  /* _TEST_ */
