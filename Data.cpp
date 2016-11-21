@@ -172,6 +172,13 @@ namespace ENEMY
 		a = b;
 		b = temp;
 	}
+
+	// takes enemy and determines if active or not
+	// active: distance <= 60
+	bool IsActive(const Enemy &e)
+	{
+		return (e.Distance <= 60);
+	}
 }
 
 namespace SHIELDED

@@ -23,6 +23,13 @@ namespace control
 	enum Mode {INTERACTIVE, STEP, SILENT};
 	Mode GetMode();
 	void Read(Castle&);
-	void Phase1();
-	void SortKilled(Enemy** arr, const int &size);
 } 
+
+namespace Phase1
+{
+	void Start();
+	void _SortKilled(Enemy** arr, const int &size);
+	void _PrintTime(const int &time);
+	void _PrintRegion(const int &i);
+	void _Timer(Castle &c);
+}

@@ -131,8 +131,12 @@ namespace control
 
 		}
 	}
+}
 
-	/*		! phase1 is done !
+namespace Phase1
+{
+	using namespace control;
+/*		! phase1 is done !
 		1- File loading function. The function that reads input file to: (done)
 			a.  Load Towers data
 			b.  Load constants values
@@ -152,23 +156,60 @@ namespace control
 					The killed enemies have to be printed ordered by enemy health.
 		*/
 
-	void Phase1()
+	void Start()
 	{
 		Castle c;
 		Read (c);
+		_Timer(c);
+	}
 
-		for (int time = 1; time < 3; time++)
+	// sort the array of killed enemies before they are printed
+	// sorte depending on their health from minimum to maximum health
+	// using Selection Sort, complexity of O(n^2)
+	void _SortKilled(Enemy** arr, const int &size)
+	{
+		if (!arr || size < 0)
+			throw -1;
+
+		for (int i = 0; i < size; i++)
+			for (int j = i + 1; j < size; j++)
+				if (arr[i]->Health > arr[j]->Health)
+					ENEMY::Swap(arr[i], arr[j]);
+				
+	}
+
+	 
+	void _PrintTime(const int &time)
+	{
+		cout << "-----------------------";
+		cout << "Time = " << time << 's';
+		cout << "------------------------" << endl;
+	}
+
+	void _PrintRegion(const int &i)
+	{
+		cout << "========= ";
+		cout << "Region " << (char)('A' + i) << ":\n";
+	}
+
+	// all what is done in every second
+	void _Timer(Castle &c)
+	{
+		// assume we don't have inactive enemies, until we can find anyone 
+		bool finished = false;
+
+		// do the same each time step
+		// stops when all enemies in all regions are killed 
+		for (int time = 1 ; !finished; time++)
 		{
-			cout << "-----------------------";
-			cout << "Time = " << time << 's';
-			cout << "------------------------" << endl;
+			_PrintTime(time);
 
-			// do the same for all the Towers
-			for (int i = 0; i < 4; i++)
+			finished = true;
+
+			// do the same for all the Regions
+			for (int i = A_REG; i <= D_REG; i++)
 			{
-				cout << "========= ";
-				cout << "Region " << (char)('A' + i) << ":\n";
-
+				_PrintRegion(i);
 
 				// to store killed enemies
 				int killcount = 0;
@@ -189,40 +230,44 @@ namespace control
 				{
 					ENEMY::Move(*e, T);
 
-					// check if enemy is active to kill him later
-					if (e->Distance < 60 && killcount < 2)
+					if (ENEMY::IsActive(*e))	// active
 					{
-						killed[killcount++] = e;
-
-						// special case: when enemy is first one
-						if (temp == NULL)
+						// kill him, print in Killed
+						if (killcount < 2)
 						{
-							T.firstEnemy = e->next;
-							e->next = NULL;
+							killed[killcount++] = e;
 
-							// traverse to next enemy
-							e = T.firstEnemy;
+							// special case: when enemy is first one
+							if (temp == NULL)
+							{
+								T.firstEnemy = e->next;
+								e->next = NULL;
+
+								// traverse to next enemy
+								e = T.firstEnemy;
+							}
+							else 
+							{
+								// isolate it from the list
+								temp->next = e->next;
+								e->next = NULL;
+
+								// traverse to next enemy
+								e = temp->next;
+							}
+							continue;
 						}
+						// cannot kill him, print in active
 						else 
 						{
-							// isolate it from the list
-							temp->next = e->next;
-							e->next = NULL;
-
-							// traverse to next enemy
-							e = temp->next;
+							// print him as active but not killed 
+							ENEMY::Print(*e);
+							active_exists = true;
 						}
-						continue;
 					}
-
-					// active but cannot kill him
-					if (e->Distance < 60 && killcount >= 2)
-					{
-						// print him as active but not killed 
-						ENEMY::Print(*e);
-						active_exists = true;
-					}
-
+					else 		// inactive
+						finished = false;		// we have inactive, so we will come back again
+					
 
 					// go to the next enemy
 					temp = e;
@@ -238,40 +283,45 @@ namespace control
 				{
 					ENEMY::Move(*e, T);
 
-					// check if enemy is active to kill him later
-					if (e->Distance < 60 && killcount < 4)
+					if (ENEMY::IsActive(*e))	// active
 					{
-						killed[killcount++] = e;
-
-						// special case: when enemy is first one
-						if (temp == NULL)
+						// kill him, print in Killed
+						if (killcount < 4)
 						{
-							// isolate it from the list
-							T.firstShielded = e->next;
-							e->next = NULL;
+							killed[killcount++] = e;
 
-							// traverse to next enemy
-							e = T.firstShielded;
+							// special case: when enemy is first one
+							if (temp == NULL)
+							{
+								// isolate it from the list
+								T.firstShielded = e->next;
+								e->next = NULL;
+
+								// traverse to next enemy
+								e = T.firstShielded;
+							}
+							else 
+							{
+								// isolate it from the list
+								temp->next = e->next;
+								e->next = NULL;
+
+								// traverse to next enemy
+								e = temp->next;
+							}
+							continue;
 						}
-						else 
+
+						// cannot kill him, print in active
+						if (killcount > 3)
 						{
-							// isolate it from the list
-							temp->next = e->next;
-							e->next = NULL;
-
-							// traverse to next enemy
-							e = temp->next;
+							// print him as active but not killed 
+							ENEMY::Print(*e);
+							active_exists = true;
 						}
-						continue;
 					}
-
-					// active but cannot kill him
-					if (e->Distance < 60 && killcount > 3)
-					{
-						// print him as active but not killed 
-						ENEMY::Print(*e);
-						active_exists = true;
-					}
+					else 		// inactive
+						finished = false;		// we have inactive, so we will come back again
 
 					// go to the next enemy
 					temp = e;
@@ -283,8 +333,8 @@ namespace control
 					cout << "NONE\n";
 				
 
-				// sort the array of killed enemies in descend order of their health
-				SortKilled(killed, killcount);
+				// sort the array of killed enemies in ascending order of their health
+				_SortKilled(killed, killcount);
 
 				// print killed 
 				cout << "Killed Enemies: \n";
@@ -302,21 +352,6 @@ namespace control
 			cout << endl;
 		}
 
-		cout << endl;
-	}
 
-	// used only Phase1 to sort the array of killed enemies before they are printed
-	// sorte depending on their health from minimum to maximum health
-	// using Selection Sort, complexity of O(n^2)
-	void SortKilled(Enemy** arr, const int &size)
-	{
-		if (!arr || size < 0)
-			throw -1;
-
-		for (int i = 0; i < size; i++)
-			for (int j = i + 1; j < size; j++)
-				if (arr[i]->Health > arr[j]->Health)
-					ENEMY::Swap(arr[i], arr[j]);
-				
 	}
 }

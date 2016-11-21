@@ -64,6 +64,8 @@ namespace ENEMY
 	void Print(const Enemy &e);
 
 	void Swap(Enemy* &a, Enemy* &b);
+
+	bool IsActive(const Enemy &e);
 }
 
 namespace SHIELDED
