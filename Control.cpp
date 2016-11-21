@@ -264,7 +264,6 @@ namespace Phase1
 						{
 							// print him as active but not killed 
 							ENEMY::Print(*e);
-							active_exists = true;
 							activecount++;
 						}
 					}
@@ -320,7 +319,6 @@ namespace Phase1
 						{
 							// print him as active but not killed 
 							ENEMY::Print(*e);
-							active_exists = true;
 							activecount++;
 						}
 					}
@@ -351,7 +349,7 @@ namespace Phase1
 				if (killcount == 0)
 					cout << "NONE\n";
 				else // print the num of them
-					cout << "Total Num = " << --killcount << '\n'; 
+					cout << "Total Num = " << killcount << '\n'; 
 
 				cout << endl;
 
@@ -362,7 +360,7 @@ namespace Phase1
 			if (finished)
 			{
 				cout << "Finished Killing all at Time: " << time << '\n';
-				return 
+				return;
 			}
 		}
 
