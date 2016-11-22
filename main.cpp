@@ -13,7 +13,7 @@
 using namespace control;
 
 // comment this on releasing to activate main 
-#include "test.h"
+//#include "test.h"
 
 #ifndef _TEST_
 int main()

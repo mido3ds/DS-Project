@@ -42,11 +42,13 @@ struct Enemy;
 namespace CASTLE
 {
 	void Initialize(Castle &C);
+	bool IsEmpty(const Castle &c);
 }
 
 namespace TOWER
 {
 	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
+	bool IsEmpty(const Tower &t);
 }
 
 namespace ENEMY

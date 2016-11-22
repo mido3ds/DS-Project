@@ -23,6 +23,13 @@ namespace CASTLE
 
 		C.c2 = C.c3 = C.c1 = 0;
 	}
+
+	// check if all towers in castle with no enemies
+	bool IsEmpty(const Castle &c)
+	{
+		return (TOWER::IsEmpty(c.towers[0]) && TOWER::IsEmpty(c.towers[1]) &&TOWER::IsEmpty(c.towers[2]) &&TOWER::IsEmpty(c.towers[3]));
+	}
+
 }
 
 namespace TOWER
@@ -48,6 +55,12 @@ namespace TOWER
 			t->TL = TowerLength;
 		}
     } 
+
+	// check if Tower is Empty of both normal and shielded enemies
+	bool IsEmpty(const Tower &t)
+	{
+		return (t.num_enemies == 0);
+	}
 }
 
 namespace ENEMY

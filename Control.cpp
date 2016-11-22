@@ -199,13 +199,12 @@ namespace Phase1
 	// all what is done in every second
 	void _Timer(Castle &c)
 	{
+		int time;
 		// do the same each time step
 		// stops when all enemies in all regions are killed 
-		for (int time = 1 ;; time++)
+		for (time = 1; !CASTLE::IsEmpty(c); time++)
 		{
 			_PrintTime(time);
-
-			bool finished = true;
 
 			// do the same for all the Regions
 			for (int i = A_REG; i <= D_REG; i++)
@@ -257,6 +256,7 @@ namespace Phase1
 								// traverse to next enemy
 								e = temp->next;
 							}
+							T.num_enemies--;
 							continue;
 						}
 						// cannot kill him, print in active
@@ -267,8 +267,6 @@ namespace Phase1
 							activecount++;
 						}
 					}
-					else 		// inactive
-						finished = false;		// we have inactive, so we will come back again
 					
 
 					// go to the next enemy
@@ -311,6 +309,7 @@ namespace Phase1
 								// traverse to next enemy
 								e = temp->next;
 							}
+							T.num_enemies--;
 							continue;
 						}
 
@@ -322,21 +321,21 @@ namespace Phase1
 							activecount++;
 						}
 					}
-					else 		// inactive
-						finished = false;		// we have inactive, so we will come back again
 
 					// go to the next enemy
 					temp = e;
 					e = e->next;
 				}
 
+				// Printing the active:-
 				// if there is no active enemies to print , print none
 				if (!activecount)
 					cout << "NONE\n";
 				else	// print the num
 					cout << "Total Num = " << activecount << '\n';
 				
-
+				
+				// printing the dead:-
 				// sort the array of killed enemies in ascending order of their health
 				_SortKilled(killed, killcount);
 
@@ -356,14 +355,8 @@ namespace Phase1
 			}
 
 			cout << endl;
-
-			if (finished)
-			{
-				cout << "Finished Killing all at Time: " << time << '\n';
-				return;
-			}
 		}
 
-
+		cout << "Finished Killing all at Time: " << --time << '\n';
 	}
 }
