@@ -17,6 +17,8 @@ using namespace std;
 *   -write pseudo-code comments in function before making it, to make it easy to develop, read and modify the function later
 */
 
+extern double c1, c2, c3;		// constants to calculate priority enemies
+
 /* Enumerators */
 //Enemy types: Paver, Fighter, and Shielded Fighter
 enum TYPE {
@@ -43,12 +45,15 @@ namespace CASTLE
 {
 	void Initialize(Castle &C);
 	bool IsEmpty(const Castle &c);
+	bool IsDestroyed(const Castle &c);
 }
 
 namespace TOWER
 {
 	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
 	bool IsEmpty(const Tower &t);
+	void Fire(Tower* t, Enemy* arr[], int size, int time);
+	bool IsDestroyed(const Tower &t);
 }
 
 namespace ENEMY
@@ -67,7 +72,7 @@ namespace ENEMY
 
 	void Swap(Enemy* &a, Enemy* &b);
 
-	bool IsActive(const Enemy &e);
+	bool IsActive(const Enemy &e, const int &time);
 }
 
 namespace SHIELDED
@@ -75,6 +80,13 @@ namespace SHIELDED
 	Enemy* Add(Tower* t, Enemy* &lastOne,
 		const int &S, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
+   
+   int GetPriority(Enemy*arr[],int size,int Time);
+
+   bool IsShielded(const Enemy *e);
+
+   void Sort(Enemy* arr[], const int &size);
+
 }
 
 
@@ -96,7 +108,7 @@ struct Tower
 	// Pointers to enemies list
 	Enemy* firstEnemy;		// initailized to NULL
 	Enemy* firstShielded;	// initialized to NULL
-	int num_enemies;		// increamented by one when adding enemy, referes to all enemies
+	int num_enemies;	// increamented by one when adding enemy, referes to all enemies
 };
 
 struct Castle
@@ -108,9 +120,6 @@ struct Castle
 	int W;	//width
 	int L;  //Height
 	Tower towers[NUM_OF_TOWERS];	//Castle has 4 towers	
-
-	// Modified Properities :-
-	double c1, c2, c3;		// constants to calculate priority enemies
 };
 
 struct Enemy
@@ -135,7 +144,8 @@ struct Enemy
 	int kill_delay;		// time of kill - time of arrival
 	// initialized to -1, to catch the bug if it is still -1 at end of programm
 
-
+     double priority;		// initialized to -1
 	// Pointers
 	Enemy* next;		// initialize to NULL
+
 };

@@ -30,6 +30,14 @@ namespace CASTLE
 		return (TOWER::IsEmpty(c.towers[0]) && TOWER::IsEmpty(c.towers[1]) &&TOWER::IsEmpty(c.towers[2]) &&TOWER::IsEmpty(c.towers[3]));
 	}
 
+	bool IsDestroyed(const Castle &c)
+	{
+		using namespace TOWER;
+		return (IsDestroyed(c.towers[A_REG]) 
+				&& IsDestroyed(c.towers[B_REG]) 
+				&& IsDestroyed(c.towers[C_REG]) 
+				&& IsDestroyed(c.towers[D_REG]));
+	}
 }
 
 namespace TOWER
@@ -61,6 +69,23 @@ namespace TOWER
 	{
 		return (t.num_enemies == 0);
 	}
+
+	//
+	void Fire(Tower* t, Enemy* arr[], int size, int time)
+	{
+		SHIELDED::GetPriority(arr, size, time);
+		SHIELDED::Sort(arr,size);
+		for (i=0;i<t->maxN_enemies;i++)
+		{
+			//ENEMY::Damage(Tower*t,arr[i])
+		}
+
+	}
+
+	bool IsDestroyed(const Tower &t)
+	{
+		return (t->Health <= 0);
+	}
 }
 
 namespace ENEMY
@@ -78,6 +103,7 @@ namespace ENEMY
         e->reload_period = Prd;
 		e->speed = Speed;
         e->Region = R;
+		e->priority = -1;
         
         e->Distance = 60 + e->arrive_time * e->speed;
         e->fight_delay = -1;
@@ -187,10 +213,10 @@ namespace ENEMY
 	}
 
 	// takes enemy and determines if active or not
-	// active: distance <= 60
-	bool IsActive(const Enemy &e)
+	// active: arrival time <= time
+	bool IsActive(const Enemy &e, const int &time)
 	{
-		return (e.Distance <= 60);
+		return (e->arrival_time <= time);
 	}
 }
 
@@ -225,5 +251,50 @@ namespace SHIELDED
 
 		lastOne = temp;		// update lastone
 		return lastOne;
+	}
+
+	// calculates priorities of a list of shilded and store them in Enemey::priority
+	int GetPriority(Enemy*arr[], int size, int Time)
+	{ 
+		int i=0;
+      	while (IsShielded(arr[i]) && i < size)
+		{
+			arr[i]->priority = (arr[i]->fire_power /arr[i]->Distance)*c1+c2/((time - arr[i]->arrive_time)+1)+arr[i]->Health *c3;
+			i++;
+		}
+
+		return (i);
+	}
+
+	// returns true if enemy is shielded
+	bool IsShielded(const Enemy *e)
+	{
+		return (e->Type == SHLD_FITR);
+	}
+
+	// sort an array of shielded enemies ,from max to min, depending on its priority
+	// use selection sorting
+	void Sort(Enemy* arr[], const int &size)
+	{
+		int maxIndex = 0;
+
+		for (int i = 0; i < size && SHIELDED::IsShielded(arr[i]); i++)
+		{
+			// assume 
+			maxIndex = i;
+
+			for (int j = i + 1; j < size && SHIELDED::IsShielded(arr[j]); j++)
+			{
+				if (arr[i]->priority < arr[j]->priority)
+				{
+					// should be swaped
+					maxIndex = j;
+				}
+			}
+
+			// swap
+			if (maxIndex != i)
+				ENEMY::Swap(arr[i], arr[maxIndex]);
+		}
 	}
 }

@@ -131,6 +131,31 @@ namespace control
 
 		}
 	}
+
+	// main loop
+	void _Timer(Caste &c)
+	{
+		for (int timer = 0;; timer++)
+		{
+			// loop for regions
+			for (int region = A_REG; region <= D_REG; region++)
+			{
+				// iterate through enemies:
+					// move enemy
+					// fire at tower if possible
+					// add it to active array
+					// break if enemy is not avtive
+				// begin with shielded enemies, then the normal
+				// tower fires at enemies
+				if (TOWER::IsDestroyed(t))
+					// Transfer(c, region);
+			}
+
+			// did game end?
+			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
+				break;
+		}
+	}
 }
 
 namespace Phase1
