@@ -446,6 +446,9 @@ namespace ENEMY
 
 		// calc Kill delay KD = time - (FD + arrival time)
 		e->kill_delay = time - (e->fight_delay + e->arrive_time);
+		Log::total_KD += e->kill_delay;
+
+		Log::ToFile(e, time);
 		
 		delete e;
 		t->num_enemies--;
@@ -606,15 +609,14 @@ namespace SHIELDED
 namespace Log
 {
 	// bunch of variables to store information to be print at end
-	int total_time;
-	int total_FD;
-	int total_KD;
-	int total_enemies_beg;		// at beginning
-	int tower_health_beg;		// at beginning
+	int total_FD = 0;
+	int total_KD = 0;
+	int total_enemies_beg = 0;		// at beginning
+	int tower_health_beg = 0;		// at beginning
 
 
 	// to init the file
-	void InitFile()
+	void Initialize(Castle &c)
 	{
 		ofstream outFile("output.txt", ios::out);
 		if (!outFile)
@@ -625,6 +627,9 @@ namespace Log
 		
 		// write first line
 		outFile << "KTS S FD KD FT\n";
+
+		total_enemies_beg = CASTLE::GetTotalEnemies(c);
+		tower_health_beg = c.towers[0].Health;
 	}
 
 	// add enemy to file 
@@ -676,8 +681,8 @@ namespace Log
 				<< c.towers[3].unpaved << '\n'
 	}
 
-	// end of file, state is the state of the game 
-	void EndFile(const State &state, Castle &c)
+	// end of file
+	void End(Castle &c)
 	{
 		ofstream outFile("output.txt", ios::app);
 		if (!outFile)
@@ -688,35 +693,32 @@ namespace Log
 
 		int total_killed = (total_enemies_beg - CASTLE::GetTotalEnemies(c));
 
-		switch (state)
+		// WIN
+		if (CASTLE::IsEmpty(c))
 		{
-			case WIN:
-			{
-				/*a. Total number of enemies
-				b. Average “Fight Delay” and Average “Kill Delay”*/
-				outFile << "Game is WIN\n";
+			/*a. Total number of enemies
+			b. Average “Fight Delay” and Average “Kill Delay”*/
+			outFile << "Game is WIN\n";
 
-				outFile << "Total Enemies = " << total_enemies_beg << '\n';
+			outFile << "Total Enemies = " << total_enemies_beg << '\n';
 
-				outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_enemies_beg << '\n';
-				outFile << "Average Kill Delay = " << total_KD / total_enemies_beg << '\n';
-			}
-			case LOOSE:
-			{
-				/*a. Numberofkilledenemies
-				b. Numberofaliveenemies(activeandinactive)
-				c. Average “Fight Delay” and Average “Kill Delay” for killed enemies only*/
-				outFile << "Game is LOST\n";
-
-				outFile << "Number of killed enemies = " << total_killed << '\n';
-				outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
-
-				outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_killed << '\n';
-				outFile << "Average Kill Delay = " << total_KD / total_killed << '\n';
-			}
-			default:
-				break;
+			outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_enemies_beg << '\n';
+			outFile << "Average Kill Delay = " << total_KD / total_enemies_beg << '\n';
 		}
+		else if (CASTLE::IsDestroyed(c)) // LOOSE
+		{
+			/*a. Numberofkilledenemies
+			b. Numberofaliveenemies(activeandinactive)
+			c. Average “Fight Delay” and Average “Kill Delay” for killed enemies only*/
+			outFile << "Game is LOST\n";
+
+			outFile << "Number of killed enemies = " << total_killed << '\n';
+			outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
+
+			outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_killed << '\n';
+			outFile << "Average Kill Delay = " << total_KD / total_killed << '\n';
+		}
+			
 
 		outFile.close();
 	}

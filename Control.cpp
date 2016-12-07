@@ -14,24 +14,27 @@
 
 namespace Control
 {
+	using namespace Log;
+	
 	void Start()
 	{
 		// initiatlize
-		Castle c;
+		Castle c; 	
 		Read(c);
-
-		GetMode();
 
 		// play
 		Loop(c);
 
 		// end
+		// Log::End(c);
+		// Clean(c);
 	}
 
 	// main loop
 	void Loop(Castle &c)
 	{
 		SetWindow();
+		Mode mode = GetMode();
 
 		for (int timer = 0; !HasFinished(c); timer++)
 		{
@@ -52,6 +55,8 @@ namespace Control
 		printf("1- Interactive Mode\n");
 		printf("2- Step-by-step Mode\n");
 		printf("3- Silent Mode\n");
+
+		Mode mode;
 
 		char q = cin.get();
 		switch (q)
@@ -163,6 +168,9 @@ namespace Control
 			}
 
 		}
+
+		// initialize the log file
+		Log::Initialize(c);
 	}
 
 	bool HasFinished(Castle &c)

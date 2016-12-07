@@ -22,7 +22,6 @@ using namespace std;
 namespace Control
 {
 	enum Mode {INTERACTIVE, STEP, SILENT};
-	Mode mode = SILENT;
 	Mode GetMode();
 
 	enum State {WIN, LOOSE};

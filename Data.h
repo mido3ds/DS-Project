@@ -116,16 +116,13 @@ namespace SHIELDED
 namespace Log
 {
 	// bunch of variables to store information to be print at end
-	extern int total_time;
 	extern int total_FD;
 	extern int total_KD;
 	extern int total_enemies_beg;		// at beginning
 	extern int tower_health_beg;		// at beginning
 
-	enum State {WIN, LOOSE};
-
 	// to init the file
-	void InitFile();
+	void Initialize(Castle &c);
 
 	// add enemy to file 
 	void ToFile(Enemy* e, const int &time);
@@ -134,7 +131,7 @@ namespace Log
 	void ToFile(Castle &c);
 
 	// end of file, state is the state of the game 
-	void EndFile(const State &state, Castle &c)s;
+	void End(Castle &c)s;
 }
 
 
