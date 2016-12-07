@@ -107,7 +107,7 @@ namespace control
 			// did game end?
 			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
 				break;
-			Sleep(SECOND);
+			//Sleep(SECOND);
 		}
 	}
 

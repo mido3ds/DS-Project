@@ -84,7 +84,7 @@ namespace TOWER
 		int kill_count = 0;
 
 
-		for (int i = 0; i < t->maxN_enemies; i++)
+		for (int i = 0; i < t->maxN_enemies && i < size && arr[i]; i++)
 		{
 			ENEMY::Damage(arr[i], t, time);
 			
@@ -112,7 +112,7 @@ namespace TOWER
 
 		// kill & print
 		for (int i = 0; i < kill_count; i++)
-			ENEMY::Kill(arr[i], t, time);
+			ENEMY::Kill(killed[i], t, time);
 
 		delete[] killed;
 
@@ -133,7 +133,7 @@ namespace TOWER
 			k++;
 		
 		// update health
-		t->Health -= (k / e->Distance) * e->fire_power;		
+		t->Health -= (static_cast<double>(k) / e->Distance) * e->fire_power;		
     }
 	
 	// move enemies from destroyed tower to next one 
@@ -404,7 +404,7 @@ namespace ENEMY
 			k++;
 
 		// update health
-		e->Health -= ((1 / e->Distance) * t->fire_power * (1 / k));  
+		e->Health -= ((1.0 / e->Distance) * t->fire_power * (1.0 / k));  
 
 		// calc fight delay FD = Time - arrival time
 		if (e->fight_delay == -1)	// firt time
@@ -482,7 +482,7 @@ namespace SHIELDED
 	int GetPriority(Enemy*arr[], int size, int time)
 	{ 
 		int i = 0;
-      	while (ENEMY::IsShielded(arr[i]) && i < size)
+      	while (i < size && ENEMY::IsShielded(arr[i]))
 		{
 			arr[i]->priority = (arr[i]->fire_power /arr[i]->Distance) * TOWER::c1 + TOWER::c2/((time - arr[i]->arrive_time)+1)+arr[i]->Health *TOWER::c3;
 			i++;
