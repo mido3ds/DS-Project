@@ -64,6 +64,50 @@ namespace TOWER
 		}
     } 
 
+	// loop for all towers in one time step
+	void Loop(Castle &c, const int &timer)
+	{
+		// loop for regions
+		for (int region = A_REG; region <= D_REG; region++)
+		{
+			// pseudo
+				// iterate through enemies:
+					// move enemy
+					// fire at tower if possible
+					// add it to active array
+					// break if enemy is not avtive
+				// begin with shielded enemies, then the normal
+				// tower fires at enemies
+				// draw 
+				// if tower is destroyed transfer enemies
+
+			// tower alias
+			Tower& T = c.towers[region];
+
+			// dont waste time with destroyed/empty tower
+			if (TOWER::IsDestroyed(T) || TOWER::IsEmpty(T))
+				continue;
+
+			// array of active enemies 
+			Enemy** active = new Enemy*[T.num_enemies];
+			int act_count = 0;		// counter to store in array
+
+			// enemies fire, move and be killed
+			ENEMY::Loop(T.firstShielded, T, timer, active, act_count);
+			ENEMY::Loop(T.firstEnemy, T, timer, active, act_count);
+
+			// tower fires
+			TOWER::Fire(&T, active, act_count, timer);
+			
+			if (TOWER::IsDestroyed(T))
+					TOWER::Transfer(c, region);
+
+			DrawEnemies(active, act_count, region);
+
+			delete[] active;
+		}
+	}
+
 	// check if Tower is Empty of both normal and shielded enemies
 	bool IsEmpty(const Tower &t)
 	{
@@ -232,6 +276,23 @@ namespace ENEMY
 
         return e;
     }
+
+	// loop for one enemy
+	// move enemy, make him fire, add him to active list while this enmey is active
+	void Loop(Enemy* e, Tower* T, const int &timer, Enemy* active[], int &act_count)
+	{
+		while (e && ENEMY::IsActive(*e, timer))
+		{
+			ENEMY::Move(*e, T);
+
+			ENEMY::Fire(e, &T);
+
+			active[act_count++] = e;
+
+			// go to next enemy
+			e = e->next;
+		}
+	}
 
 	// adds enemy to the end of list 
 	// if is first one, it makes tower points at this enemy

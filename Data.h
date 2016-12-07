@@ -51,6 +51,7 @@ namespace TOWER
 	extern double c1, c2, c3;		// constants read in run-time to calculate priority enemies
 
 	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
+	void Loop(Castle &c, const int &timer);
 	bool IsEmpty(const Tower &t);
 	void Fire(Tower* t, Enemy* arr[], int size, int time);
 	bool IsDestroyed(const Tower &t);
@@ -62,6 +63,8 @@ namespace TOWER
 namespace ENEMY
 {
 	Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const REGION &R);
+
+	void Loop(Enemy* e, Tower* T, const int &timer, Enemy* active[], int &act_count);
 
 	Enemy* Add(Tower* t, Enemy* &lastOne,
 		const int &S, const int &TY, const int &T, const int &H,

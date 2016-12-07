@@ -1,5 +1,6 @@
 ﻿#include "Control.h"
 #include <cstdlib>
+#include <limits>
 
 /*		// Tips: Read Carefully!  //
 *   -document everything you write, comment it and be aware of the readability of your code, and chose meaningfull nanes for variables 
@@ -15,102 +16,31 @@ namespace control
 {
 	void Start()
 	{
-		// initiatlze
+		// initiatlize
 		Castle c;
 		Read(c);
 
+		GetMode();
+
 		// play
-		_Loop(c);
-		// detect win or lose
+		Loop(c);
+
+		// end
 	}
 
 	// main loop
-	void _Loop(Castle &c)
+	void Loop(Castle &c)
 	{
 		SetWindow();
 
-		for (int timer = 0;; timer++)
+		for (int timer = 0; !HasFinished(c); timer++)
 		{
 			// refresh frame
 			DrawCastle(c, timer);
 
-			// loop for regions
-			for (int region = A_REG; region <= D_REG; region++)
-			{
-				// iterate through enemies:
-					// move enemy
-					// fire at tower if possible
-					// add it to active array
-					// break if enemy is not avtive
-				// begin with shielded enemies, then the normal
-				// tower fires at enemies
-				// draw 
-				// if tower is destroyed transfer enemies
-
-				// tower alias
-				Tower& T = c.towers[region];
-
-				// dont waste time with destroyed/empty tower
-				if (TOWER::IsDestroyed(T) || TOWER::IsEmpty(T))
-					continue;
-
-				// active array	at most of all enemies
-				Enemy** active = new Enemy*[T.num_enemies];
-				int act_count = 0;		// counter to store in array
-
-				// shielded enemies
-				Enemy* e = T.firstShielded;
-				while (e && ENEMY::IsActive(*e, timer))
-				{
-					// move enemy
-					// fire at tower if possible
-					// add it to active array
-					// break if enemy is not avtive
-
-					ENEMY::Move(*e, T);
-
-					ENEMY::Fire(e, &T);
-
-					active[act_count++] = e;
-
-					// go to next enemy
-					e = e->next;
-				}
-
-				// normal enemies
-				e = T.firstEnemy;
-				while (e && ENEMY::IsActive(*e, timer))
-				{
-					// move enemy
-					// fire at tower if possible
-					// add it to active array
-					// break if enemy is not avtive
-
-					ENEMY::Move(*e, T);
-
-					ENEMY::Fire(e, &T);
-
-					active[act_count++] = e;
-
-					// go to next enemy
-					e = e->next;
-				}
-
-				// tower fires
-				TOWER::Fire(&T, active, act_count, timer);
-				
-				if (TOWER::IsDestroyed(T))
-					 TOWER::Transfer(c, region);
-
-				DrawEnemies(active, act_count);
-
-				delete[] active;
-			}
-
-			// did game end?
-			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
-				break;
-			//Sleep(SECOND);
+			TOWER::Loop(c, timer);
+			
+			_Interact(mode);
 		}
 	}
 
@@ -128,19 +58,20 @@ namespace control
 		{
 		case '1':
 			// interact
-			return INTERACTIVE;
+			mode = INTERACTIVE;
 			break;
 
 		case '2':
 			// step by step
-			return STEP;
+			mode = STEP;
 			break;
 
 		default:
 			// silent mode
-			return SILENT;
+			mode = SILENT;
 			break;
 		}
+		return mode;
 	}
 
 	// read all input from input.txt 
@@ -231,6 +162,36 @@ namespace control
 				}
 			}
 
+		}
+	}
+
+	bool HasFinished(Castle &c)
+	{
+		return (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c));
+	}
+
+	// interacts with user depending on the choosen mode
+	void _Interact(const Mode &mode)
+	{
+		switch (mode)
+		{
+			case SILENT:
+			{
+				return;
+			}
+			case INTERACTIVE:
+			{
+				// take input from user to continue
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');		// ignore last input not to be fooled :D
+				cin.get();
+				return;
+			}
+			case STEP:
+			{
+				// wait for a second
+				Sleep(SECOND);
+				return;
+			}
 		}
 	}
 }

@@ -23,9 +23,13 @@ namespace control
 {
 	enum Mode {INTERACTIVE, STEP, SILENT};
 	Mode mode = SILENT;
+	Mode GetMode();
+
+	enum State {WIN, LOOSE};
 
 	void Start();
-	Mode GetMode();
 	void Read(Castle&);
-	void _Loop(Castle &c);
+	void Loop(Castle &c, const Mode &mode);
+	bool HasFinished(Castle &c);
+	void _Interact(const Mode &mode);
 } 
