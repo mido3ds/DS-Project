@@ -23,7 +23,7 @@ namespace control
 	enum Mode {INTERACTIVE, STEP, SILENT};
 	Mode GetMode();
 	void Read(Castle&);
-	void _Timer(Caste &c);
+	void _Timer(Castle &c);
 } 
 
 namespace Phase1

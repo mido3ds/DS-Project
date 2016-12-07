@@ -65,7 +65,7 @@ namespace control
 		TOWER::Initialize(C ,TH, N, TP);
 
 		// read constants
-		inFile >> C.c1 >> C.c2 >> C.c3;
+		inFile >> c1 >> c2 >> c3;
 
 		// read enemies
 		int S, TY, T, H, Pow, Prd, Speed; char R;		// variables to read at one line as specified
@@ -133,7 +133,7 @@ namespace control
 	}
 
 	// main loop
-	void _Timer(Caste &c)
+	void _Timer(Castle &c)
 	{
 		for (int timer = 0;; timer++)
 		{
@@ -147,7 +147,8 @@ namespace control
 					// break if enemy is not avtive
 				// begin with shielded enemies, then the normal
 				// tower fires at enemies
-				if (TOWER::IsDestroyed(t))
+				
+				if (TOWER::IsDestroyed())
 					// Transfer(c, region);
 			}
 

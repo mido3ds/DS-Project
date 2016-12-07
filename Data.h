@@ -147,5 +147,6 @@ struct Enemy
      double priority;		// initialized to -1
 	// Pointers
 	Enemy* next;		// initialize to NULL
+	Enemy* prev;		// initialize to NULL
 
 };

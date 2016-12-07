@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Data1.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

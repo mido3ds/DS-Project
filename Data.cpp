@@ -109,6 +109,7 @@ namespace ENEMY
         e->fight_delay = -1;
         e->kill_delay = -1;
         e->next = NULL;
+		e->prev = NULL;
 
         return e;
     }
@@ -138,6 +139,7 @@ namespace ENEMY
 		// it is not the first one
 		temp = ENEMY::Initialize(S, TY, T, H, Pow, Prd, Speed, R);		// new enemy at temp
 		lastOne->next = temp;		// previous node points at the next one
+		temp->prev = lastOne;
 		t->num_enemies++;		// new enemy added
 
 		lastOne = temp;		// update lastone
@@ -148,13 +150,13 @@ namespace ENEMY
 	// takes enemy to move, tower to detect if possible to move depending on unpaved are
 	void Move(Enemy &e, const Tower &T)
 	{
-		// chek if it can move
-		if (e.Distance > T.unpaved)
-		{
-			// don't let enemy get iside tower
-			if (e.Distance > MIN_DISTANCE_FROM_CASTLE)
-				e.Distance -= e.speed;
-		}
+		// don't let enemy get iside tower
+		if (e.Distance > MIN_DISTANCE_FROM_CASTLE)
+			e.Distance -= e.speed;
+
+		// if entered paved area, return him to the beginnig of it
+		if (e.Distance < T.unpaved)
+			e.Distance = T.unpaved;
 	}
 
 	// for phase1 only, we won't use it
@@ -216,7 +218,23 @@ namespace ENEMY
 	// active: arrival time <= time
 	bool IsActive(const Enemy &e, const int &time)
 	{
-		return (e->arrival_time <= time);
+		return (e.arrive_time <= time);
+	}
+
+	bool IsPaver(const Enemy &e)
+	{
+		return (e.Type == PVR);
+	}
+
+	// returns true if enemy is shielded
+	bool IsShielded(const Enemy *e)
+	{
+		return (e->Type == SHLD_FITR);
+	}
+
+	bool IsFighter(const Enemy &e)
+	{
+		return (e.Type == FITR);
 	}
 }
 
@@ -247,6 +265,7 @@ namespace SHIELDED
 		// it is not the first one
 		temp = ENEMY::Initialize(S, SHLD_FITR, T, H, Pow, Prd, Speed, R);		// new enemy at temp
 		lastOne->next = temp;		// previous node points at the next one
+		temp->prev = lastOne;
 		t->num_enemies++;		// new enemy added
 
 		lastOne = temp;		// update lastone
@@ -264,12 +283,6 @@ namespace SHIELDED
 		}
 
 		return (i);
-	}
-
-	// returns true if enemy is shielded
-	bool IsShielded(const Enemy *e)
-	{
-		return (e->Type == SHLD_FITR);
 	}
 
 	// sort an array of shielded enemies ,from max to min, depending on its priority
