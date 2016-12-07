@@ -14,13 +14,15 @@
 #include <fstream>
 #include "Data.h"
 #include "Const.h"
-//#include "Graph.h"
+#include "Graph.h"
 using namespace std;
+
 
 /*	Functions Prototypes  */
 namespace control
 {
 	enum Mode {INTERACTIVE, STEP, SILENT};
+	void Start();
 	Mode GetMode();
 	void Read(Castle&);
 	void _Timer(Castle &c);

@@ -19,12 +19,12 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="help.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Data1.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

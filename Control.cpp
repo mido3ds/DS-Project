@@ -1,4 +1,5 @@
 ﻿#include "Control.h"
+#include <cstdlib>
 
 /*		// Tips: Read Carefully!  //
 *   -document everything you write, comment it and be aware of the readability of your code, and chose meaningfull nanes for variables 
@@ -23,6 +24,8 @@ namespace control
 	// main loop
 	void _Timer(Castle &c)
 	{
+		SetWindow();
+
 		for (int timer = 0;; timer++)
 		{
 			// refresh frame
@@ -66,6 +69,9 @@ namespace control
 					ENEMY::Fire(e, &T);
 
 					active[act_count++] = e;
+
+					// go to next enemy
+					e = e->next;
 				}
 
 				// normal enemies
@@ -82,6 +88,9 @@ namespace control
 					ENEMY::Fire(e, &T);
 
 					active[act_count++] = e;
+
+					// go to next enemy
+					e = e->next;
 				}
 
 				// tower fires
@@ -98,8 +107,7 @@ namespace control
 			// did game end?
 			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
 				break;
-
-			sleep(SECOND);
+			Sleep(SECOND);
 		}
 	}
 

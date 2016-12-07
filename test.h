@@ -1,5 +1,5 @@
 #pragma once
-//#include "Graph.h"
+#include "Graph.h"
 #include "Data.h"
 #include "Const.h"
 #include "Control.h"
@@ -11,7 +11,7 @@ using namespace control;
 
 int main()
 {
-    control::Start();
+    Start();
 }
 
 // int main()

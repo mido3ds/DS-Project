@@ -39,6 +39,9 @@ namespace CASTLE
 
 namespace TOWER
 {
+    // defining extern constants 
+	double c1, c2, c3;
+
     // initialize castle towers 
     // input: castle, input line
     void Initialize(Castle &c, const int &TH, const int &N, const int &TP)
@@ -71,6 +74,9 @@ namespace TOWER
 	// enemies are stored, sorted, killed & printed to screen/file if enemy isdead
 	void Fire(Tower* t, Enemy* arr[], int size, int time)
 	{
+		if (size == 0 || !t || !arr)
+			return;
+
 		SHIELDED::GetPriority(arr, size, time);
 		SHIELDED::Sort(arr,size);
 		
@@ -411,9 +417,12 @@ namespace ENEMY
 	{
 		if (ENEMY::IsPaver(*e))
 		{
-			// paves and moves to the beginnig of unpaved area
-			t->unpaved = t->unpaved - e->fire_power;
-			e->Distance = t->unpaved;
+			if (e->Distance == t->unpaved)
+			{
+				// paves and moves to the beginnig of unpaved area
+			    t->unpaved = t->unpaved - e->fire_power;
+				e->Distance = t->unpaved;	
+			}
 		}
 		else
 			TOWER::Damage(e, t);
