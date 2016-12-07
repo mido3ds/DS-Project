@@ -17,8 +17,6 @@ using namespace std;
 *   -write pseudo-code comments in function before making it, to make it easy to develop, read and modify the function later
 */
 
-extern double c1, c2, c3;		// constants to calculate priority enemies
-
 /* Enumerators */
 //Enemy types: Paver, Fighter, and Shielded Fighter
 enum TYPE {
@@ -50,10 +48,15 @@ namespace CASTLE
 
 namespace TOWER
 {
+	extern double c1, c2, c3;		// constants read in run-time to calculate priority enemies
+
 	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
 	bool IsEmpty(const Tower &t);
 	void Fire(Tower* t, Enemy* arr[], int size, int time);
 	bool IsDestroyed(const Tower &t);
+	void Damage(Enemy* e, Tower* t);
+	void Transfer(Castle &c, int region);
+	void _Transfer(Tower* T1, Tower* T2, TYPE type);
 }
 
 namespace ENEMY
@@ -73,6 +76,22 @@ namespace ENEMY
 	void Swap(Enemy* &a, Enemy* &b);
 
 	bool IsActive(const Enemy &e, const int &time);
+
+	void Kill(Enemy* e, Tower* t, const int &time);
+
+	bool CanFire(Enemy* e, int time);
+
+	void Damage(Enemy* e, Tower* t, const int &time);
+
+	void Fire(Enemy* e,Tower* t);
+
+	void _InsertBefore(Enemy* e1, Enemy* e2);
+
+	bool IsShielded(const Enemy *e);
+
+	bool IsPaver(const Enemy &e);
+
+	bool IsFighter(const Enemy &e);
 }
 
 namespace SHIELDED
@@ -82,8 +101,6 @@ namespace SHIELDED
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
    
    int GetPriority(Enemy*arr[],int size,int Time);
-
-   bool IsShielded(const Enemy *e);
 
    void Sort(Enemy* arr[], const int &size);
 

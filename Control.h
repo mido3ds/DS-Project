@@ -25,12 +25,3 @@ namespace control
 	void Read(Castle&);
 	void _Timer(Castle &c);
 } 
-
-namespace Phase1
-{
-	void Start();
-	void _SortKilled(Enemy** arr, const int &size);
-	void _PrintTime(const int &time);
-	void _PrintRegion(const int &i);
-	void _Timer(Castle &c);
-}

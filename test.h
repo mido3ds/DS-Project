@@ -11,7 +11,7 @@ using namespace control;
 
 int main()
 {
-    Phase1::Start();
+    control::Start();
 }
 
 // int main()

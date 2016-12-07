@@ -2,23 +2,44 @@
 
 namespace TOWER
 {
-	void Damage(Tower*t,Enemy*E)                     //Damage to tower by enemy  
+	// damage to tower by enemy 
+	// decrease its health
+	void Damage(Enemy* e, Tower* t)                 
 	{
-		int k=1;
-	if (E->Type=SHLD_FITR)
-	{
-		k=2;
-	}
+		// provided constant
+		int k = 1;
+		if (SHIELDED::IsShielded(e))
+			k++;
 		
-	t->Health=t->Health-(k/E->Distance)*E->fire_power;
-
-	//if (c.towers[i].Health<=0)                            //if tower is destroyed
-
-		
+		// update health
+		t->Health -= (k / e->Distance) * e->fire_power;		
     }
 	
+	// move enemies from destroyed tower to next one 
+	void Transfer(Castle &c, int region)
+	{ 
+		// check if tower has enemies to move
+		if (c.towers[region].num_enemies == 0)
+			return;
+
+		// index of next tower
+		int nextTower = (region + 1) % NUM_OF_TOWERS;
+
+		// test all next towers to find the tower that can 
+		for (int i = 0; i < 3; nextTower = (nextTower + 1) % NUM_OF_TOWERS, i++)
+		{
+			// found non-destroyed tower, transfer to it
+			if (c.towers[nextTower].Health > 0)
+			{
+				_Transfer(c.towers[region], c.towers[nextTower], SHLD_FITR);
+				_Transfer(c.towers[region], c.towers[nextTower], FITR);
+				return;
+			}
+		}
+	}
+
 	// move enemies from Tower 1 --> Tower 2
-	void Transfer(Tower* T1, Tower* T2, Type type)
+	void _Transfer(Tower* T1, Tower* T2, Type type)
 	{
 		Enemy* list1 = nullptr, Enemy* list2 = nullptr;
 		// choose the list to transfer
@@ -63,29 +84,13 @@ namespace TOWER
 			}
 		}
 	}
-
-	// move enemies from destroyed 
-	void Transfer(Castle &c, int region)
-	{ 
-		int nextTower = (region + 1) % NUM_OF_TOWERS;
-
-		for (int i = 0; i < 3; nextTower = (nextTower + 1) % NUM_OF_TOWERS, i++)
-		{
-			if (c.towers[nextTower].Health > 0)
-			{
-				Transfer(c.towers[region], c.towers[nextTower], SHLD_FITR);
-				Transfer(c.towers[region], c.towers[nextTower], FITR);
-				break;
-			}
-		}
-	}
 	
 }
 
 namespace ENEMY
 {
 
-	// kill/remove enemy from the list 
+	// remove enemy from the list 
 	void Kill(Enemy* e, Tower* t, const int &time)      
 	{
 		if (!e || !t)
@@ -111,9 +116,10 @@ namespace ENEMY
 		e->kill_delay = time - (e->fight_delay + e->arrive_time);
 		
 		delete e;
+		t->num_enemies--;
 	}
 
-	//function to check if the enemy reloaded his weapon or not
+	//function to check if the enemy can fire his weapon or not at ginven time step
 	bool CanFire(Enemy* e, int time)                       
 	{ 
 		// special case
@@ -123,7 +129,7 @@ namespace ENEMY
 		return ((time - e->arrive_time) % e->reload_period == 0);
 	}
 
-	//function to reduce enemy's health and check if the enemy is killed or not and remove it if true
+	//function to reduce enemy's health 
 	void Damage(Enemy* e, Tower* t, const int &time)
 	{
 		// provided constant
@@ -139,28 +145,32 @@ namespace ENEMY
 			e->fight_delay = time - e->arrive_time;                             
 	}
 
-	void Fire(Enemy* e,Tower* t){
+	// enemy fires at given tower
+	// paver pave with their fire power 
+	void Fire(Enemy* e,Tower* t)
+	{
 		if (IsPaver(e))
 		{
+			// paves and moves to the beginnig of unpaved area
 			t->unpaved = t->unpaved - e->fire_power;
 			e->distance = t->unpaved;
 		}
 		else
-			TOWER::Damage(t, e);
+			TOWER::Damage(e, t);
 	}
 
-	// insert temp before e2
-	void _InsertBefore(Enemy* temp, Enemy* e2)
+	// insert e1 before e2
+	void _InsertBefore(Enemy* e1, Enemy* e2)
 	{
-		temp->next = e2;
+		e1->next = e2;
 			
 		if (!e2 || !e2->prev)
 			return;
 
-		temp->prev = e2->prev;
-		e2->prev->next = temp;
+		e1->prev = e2->prev;
+		e2->prev->next = e1;
 
-		e2->prev = temp;
+		e2->prev = e1;
 	}
 
 	// void modify(Enemy*list,Tower*t)
