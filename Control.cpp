@@ -15,14 +15,17 @@ namespace control
 {
 	void Start()
 	{
+		// initiatlze
 		Castle c;
 		Read(c);
-		_Timer(c);
+
+		// play
+		_Loop(c);
 		// detect win or lose
 	}
 
 	// main loop
-	void _Timer(Castle &c)
+	void _Loop(Castle &c)
 	{
 		SetWindow();
 

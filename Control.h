@@ -22,8 +22,10 @@ using namespace std;
 namespace control
 {
 	enum Mode {INTERACTIVE, STEP, SILENT};
+	Mode mode = SILENT;
+
 	void Start();
 	Mode GetMode();
 	void Read(Castle&);
-	void _Timer(Castle &c);
+	void _Loop(Castle &c);
 } 
