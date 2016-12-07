@@ -3,7 +3,7 @@
 #include "Data.h"
 #include "Const.h"
 #include "Control.h"
-using namespace control;
+using namespace Control;
 
 #define _TEST_
 

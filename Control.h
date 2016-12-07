@@ -19,7 +19,7 @@ using namespace std;
 
 
 /*	Functions Prototypes  */
-namespace control
+namespace Control
 {
 	enum Mode {INTERACTIVE, STEP, SILENT};
 	Mode mode = SILENT;

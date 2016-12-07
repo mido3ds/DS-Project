@@ -35,6 +35,11 @@ namespace CASTLE
 				&& TOWER::IsDestroyed(c.towers[C_REG]) 
 				&& TOWER::IsDestroyed(c.towers[D_REG]));
 	}
+
+	int GetTotalEnemies(Castle &c)
+	{
+		return (c.towers[0].num_enemies + c.towers[1].num_enemies + c.towers[2].num_enemies + c.towers[3].num_enemies);
+	}
 }
 
 namespace TOWER
@@ -172,12 +177,12 @@ namespace TOWER
 	void Damage(Enemy* e, Tower* t)                 
 	{
 		// provided constant
-		int k = 1;
+		double k = 1;
 		if (ENEMY::IsShielded(e))
 			k++;
 		
 		// update health
-		t->Health -= (static_cast<double>(k) / e->Distance) * e->fire_power;		
+		t->Health -= (k / e->Distance) * e->fire_power;		
     }
 	
 	// move enemies from destroyed tower to next one 
@@ -460,7 +465,7 @@ namespace ENEMY
 	void Damage(Enemy* e, Tower* t, const int &time)
 	{
 		// provided constant
-		int k = 1;
+		double k = 1;
 		if (ENEMY::IsShielded(e))
 			k++;
 
@@ -502,6 +507,25 @@ namespace ENEMY
 
 		e2->prev = e1;
 	}
+
+	char GetRegion(Enemy *e)
+	{
+		if (!e)
+			throw -1;
+		switch (e->Region)
+		{
+			case A_REG:
+				return 'A';
+			case B_REG:
+				return 'B';
+			case D_REG:
+				return 'D';
+			case C_REG:
+				return 'C';
+			default:
+				throw -1;
+		}
+	} 
 
 }
 
@@ -576,5 +600,124 @@ namespace SHIELDED
 			if (maxIndex != i)
 				ENEMY::Swap(arr[i], arr[maxIndex]);
 		}
+	}
+}
+
+namespace Log
+{
+	// bunch of variables to store information to be print at end
+	int total_time;
+	int total_FD;
+	int total_KD;
+	int total_enemies_beg;		// at beginning
+	int tower_health_beg;		// at beginning
+
+
+	// to init the file
+	void InitFile()
+	{
+		ofstream outFile("output.txt", ios::out);
+		if (!outFile)
+		{
+			cerr << "FATAL ERROR: Couldn't open file output.txt\n";
+			exit(1);
+		}
+		
+		// write first line
+		outFile << "KTS S FD KD FT\n";
+	}
+
+	// add enemy to file 
+	void ToFile(Enemy* e, const int &time)
+	{
+		if (!e)
+			throw -1;
+
+		// to file
+		ofstream outFile("output.txt", ios::app);
+		if (!outFile)
+		{
+			cerr << "FATAL ERROR: Could not open file output.txt\n";
+			exit(1);
+		}
+
+		int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = kill_delay, &FT = KD + FD;
+
+		outFile << KTS << ' ' << S << ' ' << FD << ' ' << KD<< ' ' << FT << '\n';
+	}
+
+	// add towers data to file
+	void ToFile(Castle &c)
+	{
+		ofstream outFile("output.txt", ios::app);
+		if (!outFile)
+		{
+			cerr << "FATAL ERROR: Could not open file output.txt\n";
+			exit(1);
+		}
+
+		// calc damage
+		int T1_D = tower_health_beg - c.towers[0].Health, 
+			T2_D = tower_health_beg - c.towers[1].Health, 
+			T3_D = tower_health_beg - c.towers[2].Health,
+			T4_D = tower_health_beg - c.towers[3].Health;
+
+		outFile << "T1_Total_Damage T2_Total_Damage T3_Total_Damage T4_Total_Damage\n";
+		outFile << T1_D << ' '
+				<< T2_D << ' '
+				<< T3_D << ' '
+				<< T4_D << '\n';
+
+		// print unpaved
+		outFile << "R1_Distance R2_Distance R3_Distance R4_Distance\n";
+		outFile << c.towers[0].unpaved << ' '	
+				<< c.towers[1].unpaved << ' '
+				<< c.towers[2].unpaved << ' '
+				<< c.towers[3].unpaved << '\n'
+	}
+
+	// end of file, state is the state of the game 
+	void EndFile(const State &state, Castle &c)
+	{
+		ofstream outFile("output.txt", ios::app);
+		if (!outFile)
+		{
+			cerr << "FATAL ERROR: Could not open file output.txt\n";
+			exit(1);
+		}
+
+		int total_killed = (total_enemies_beg - CASTLE::GetTotalEnemies(c));
+
+		switch (state)
+		{
+			case WIN:
+			{
+				/*a. Total number of enemies
+				b. Average “Fight Delay” and Average “Kill Delay”*/
+				outFile << "Game is WIN\n";
+
+				outFile << "Total Enemies = " << total_enemies_beg << '\n';
+
+				outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_enemies_beg << '\n';
+				outFile << "Average Kill Delay = " << total_KD / total_enemies_beg << '\n';
+			}
+			case LOOSE:
+			{
+				/*a. Numberofkilledenemies
+				b. Numberofaliveenemies(activeandinactive)
+				c. Average “Fight Delay” and Average “Kill Delay” for killed enemies only*/
+				outFile << "Game is LOST\n";
+
+				outFile << "Number of killed enemies = " << total_killed << '\n';
+				outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
+
+				outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_killed << '\n';
+				outFile << "Average Kill Delay = " << total_KD / total_killed << '\n';
+			}
+			default:
+				break;
+		}
+
+		outFile.close();
 	}
 }

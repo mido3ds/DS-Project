@@ -12,7 +12,7 @@
 *   -write pseudo-code comments in function before making it, to make it easy to develop, read and modify the function later
 */
 
-namespace control
+namespace Control
 {
 	void Start()
 	{

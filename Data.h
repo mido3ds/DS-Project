@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include "Const.h"
 using namespace std;
 /*  Data header file, contains all data structure to store data of castles and enemies
@@ -44,6 +45,7 @@ namespace CASTLE
 	void Initialize(Castle &C);
 	bool IsEmpty(const Castle &c);
 	bool IsDestroyed(const Castle &c);
+	int GetTotalEnemies(Castle &c);
 }
 
 namespace TOWER
@@ -95,6 +97,8 @@ namespace ENEMY
 	bool IsPaver(const Enemy &e);
 
 	bool IsFighter(const Enemy &e);
+
+	char GetRegion(Enemy *e);
 }
 
 namespace SHIELDED
@@ -107,6 +111,30 @@ namespace SHIELDED
 
    void Sort(Enemy* arr[], const int &size);
 
+}
+
+namespace Log
+{
+	// bunch of variables to store information to be print at end
+	extern int total_time;
+	extern int total_FD;
+	extern int total_KD;
+	extern int total_enemies_beg;		// at beginning
+	extern int tower_health_beg;		// at beginning
+
+	enum State {WIN, LOOSE};
+
+	// to init the file
+	void InitFile();
+
+	// add enemy to file 
+	void ToFile(Enemy* e, const int &time);
+
+	// add towers data to file
+	void ToFile(Castle &c);
+
+	// end of file, state is the state of the game 
+	void EndFile(const State &state, Castle &c)s;
 }
 
 

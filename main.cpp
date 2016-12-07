@@ -10,7 +10,7 @@
 #include "Data.h"
 #include "Const.h"
 #include "Control.h"
-using namespace control;
+using namespace Control;
 
 // comment this on releasing to activate main 
 #include "test.h"
