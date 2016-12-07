@@ -12,6 +12,97 @@
 
 namespace control
 {
+	void Start()
+	{
+		Castle c;
+		Read(c);
+		_Timer(c);
+		// detect win or lose
+	}
+
+	// main loop
+	void _Timer(Castle &c)
+	{
+		for (int timer = 0;; timer++)
+		{
+			// refresh frame
+			DrawCastle(c, timer);
+
+			// loop for regions
+			for (int region = A_REG; region <= D_REG; region++)
+			{
+				// iterate through enemies:
+					// move enemy
+					// fire at tower if possible
+					// add it to active array
+					// break if enemy is not avtive
+				// begin with shielded enemies, then the normal
+				// tower fires at enemies
+				// draw 
+				// if tower is destroyed transfer enemies
+
+				// tower alias
+				Tower& T = c.towers[region];
+
+				// dont waste time with destroyed/empty tower
+				if (TOWER::IsDestroyed(T) || TOWER::IsEmpty(T))
+					continue;
+
+				// active array	at most of all enemies
+				Enemy** active = new Enemy*[T.num_enemies];
+				int act_count = 0;		// counter to store in array
+
+				// shielded enemies
+				Enemy* e = T.firstShielded;
+				while (e && ENEMY::IsActive(e, timer))
+				{
+					// move enemy
+					// fire at tower if possible
+					// add it to active array
+					// break if enemy is not avtive
+
+					ENEMY::Move(*e, T);
+
+					ENEMY::Fire(e, T);
+
+					active[act_count++] = e;
+				}
+
+				// normal enemies
+				Enemy* e = T.firstEnemy;
+				while (e && ENEMY::IsActive(e, timer))
+				{
+					// move enemy
+					// fire at tower if possible
+					// add it to active array
+					// break if enemy is not avtive
+
+					ENEMY::Move(*e, T);
+
+					ENEMY::Fire(e, T);
+
+					active[act_count++] = e;
+				}
+
+				// tower fires
+				TOWER::Fire(T, acitve, act_count, timer);
+				
+				if (TOWER::IsDestroyed())
+					 TOWER::Transfer(c, region);
+
+				DrawEnemies(active, act_count);
+
+				delete active;
+			}
+
+			// did game end?
+			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
+				break;
+
+			sleep(SECOND);
+		}
+	}
+
 	// ask the user to enter a particular mode from 3 
 	// returns chosen mode
 	Mode GetMode()
@@ -132,31 +223,6 @@ namespace control
 		}
 	}
 
-	// main loop
-	void _Timer(Castle &c)
-	{
-		for (int timer = 0;; timer++)
-		{
-			// loop for regions
-			for (int region = A_REG; region <= D_REG; region++)
-			{
-				// iterate through enemies:
-					// move enemy
-					// fire at tower if possible
-					// add it to active array
-					// break if enemy is not avtive
-				// begin with shielded enemies, then the normal
-				// tower fires at enemies
-				
-				if (TOWER::IsDestroyed())
-					// Transfer(c, region);
-			}
-
-			// did game end?
-			if (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c))
-				break;
-		}
-	}
 }
 
 namespace Phase1

@@ -70,15 +70,48 @@ namespace TOWER
 		return (t.num_enemies == 0);
 	}
 
-	//
+	// damge enemies
+	// enemies are stored, sorted, killed & printed to screen/file if enemy isdead
 	void Fire(Tower* t, Enemy* arr[], int size, int time)
 	{
 		SHIELDED::GetPriority(arr, size, time);
 		SHIELDED::Sort(arr,size);
+		
+		Enemy**killed=new Enemy*[t->maxN_enemies];
+		int kill_count = 0;
+
+
 		for (i=0;i<t->maxN_enemies;i++)
 		{
-			//ENEMY::Damage(Tower*t,arr[i])
+			ENEMY::Damage(Tower*t,arr[i])
+			
+			// remove from list if dead
+			if(arr[i]->Health <= 0)
+			{
+				killed[kill_count++] = arr[i];
+				arr[i] = NULL;
+			}
 		}
+
+		// sort depending on FD
+		for (int i = 0; i < kill_count; i++)
+		{   
+			int min = i;
+			for(int j=i+1;j<kill_count;j++)
+			{
+				if (killed[j]->fight_delay < killed[j]->fight_delay)
+					min = j;
+			}
+
+			if (min != i)
+				Enemy::Swap(arr[min],arr[i]);
+		}
+
+		// kill & print
+		for (int i = 0; i < kill_count; i++)
+			ENEMY::Kill(arr[i], t, time);
+
+		delete killed;
 
 	}
 

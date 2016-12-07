@@ -85,28 +85,32 @@ namespace TOWER
 namespace ENEMY
 {
 
-	// kill/remove enemy from the list and print its information
-	void Killed(Enemy* e, Tower* t)      
+	// kill/remove enemy from the list 
+	void Kill(Enemy* e, Tower* t, const int &time)      
 	{
-		Enemy* next = t->firstEnemy;
-		Enemy* pre = NULL;
+		if (!e || !t)
+			throw -1;
 
-		if(next->Health <= 0){
-			ENEMY::Print(*next);             //function to print all information about the enemy
-			t->firstEnemy = next->next;
-			delete next;
-			return;
-		}
+		Enemy* e_plus = e->next;
+		Enemy* e_minus = e->prev;
 
-		while(next != e)
+		if (e_plus)
+			e_plus->prev = e_minus;
+
+		if (e_minus)
+			e_minus->next = e_plus;
+		else	// remove first one, update the head
 		{
-			pre = next;
-			next = next->next;
+			if (e->Type == SHLD_FITR)
+				t->firstShielded = e_plus;
+			else 	// normal
+				t->firstEnemy = e_plus;
 		}
 
-		ENEMY::Print(*next);
-		pre->next=next->next;
-		delete next;
+		// calc Kill delay KD = time - (FD + arrival time)
+		e->kill_delay = time - (e->fight_delay + e->arrive_time);
+		
+		delete e;
 	}
 
 	//function to check if the enemy reloaded his weapon or not
@@ -120,7 +124,7 @@ namespace ENEMY
 	}
 
 	//function to reduce enemy's health and check if the enemy is killed or not and remove it if true
-	void Damage(Enemy* e,Tower* t)
+	void Damage(Enemy* e, Tower* t, const int &time)
 	{
 		// provided constant
 		int k = 1;
@@ -128,16 +132,19 @@ namespace ENEMY
 			k++;
 
 		// update health
-		e->Health -= ((1 / e->Distance) * t->fire_power * (1 / k));                               
+		e->Health -= ((1 / e->Distance) * t->fire_power * (1 / k));  
 
-		//function to kill/remove enemy from the list and print its information
-		if(e->Health <= 0)
-			Killed(e,t);
+		// calc fight delay FD = Time - arrival time
+		if (e->fight_delay == -1)	// firt time
+			e->fight_delay = time - e->arrive_time;                             
 	}
 
 	void Fire(Enemy* e,Tower* t){
 		if (IsPaver(e))
+		{
 			t->unpaved = t->unpaved - e->fire_power;
+			e->distance = t->unpaved;
+		}
 		else
 			TOWER::Damage(t, e);
 	}
