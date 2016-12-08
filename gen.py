@@ -18,8 +18,8 @@ with open("input.txt", "w") as f:
     f.write("\n")
 
     # print enemies
-    n = input("Number of enemies: ")
-    includeSpeed = input("Include Enemies Speeds in File? [bonus] 0/1?")
+    n = int(input("Number of enemies: "))
+    includeSpeed = int(input("Include Enemies Speeds in File? [bonus] 0/1?"))
 
     for i in range(n):
         TY = random.randrange(0, 3)
