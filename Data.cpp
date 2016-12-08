@@ -325,7 +325,8 @@ namespace ENEMY
 		{
 			ENEMY::Move(*e, *T);
 
-			ENEMY::Fire(e, T);
+			if (ENEMY::CanFire(e, timer))
+				ENEMY::Fire(e, T);
 
 			active[act_count++] = e;
 
