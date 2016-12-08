@@ -36,13 +36,14 @@ for i in range(n):
 	H = random.randrange(1, TH)
 	Pow = random.randrange(1, TP)
 	Prd = random.randrange(1, 10)
-
+	Speed = None
+	
 	if (includeSpeed == 1):
 		Speed = random.randrange(1, 30)
 
 	R = random.choice(['A', 'B', 'C', 'D'])
 	
-	list.append(enemy(i, TY, T, H, Pow, Prd, Speed, R))
+	list.append(enemy(None, TY, T, H, Pow, Prd, Speed, R))
 	
 # sort list depending on arrive time T
 list.sort(key=lambda e: e.T)
@@ -57,7 +58,10 @@ with open("input.txt", "w") as f:
     f.write("\n")
 	
     # write enemies
+    i = 0
     for e in list:
+            e.i = i
+            i += 1
             f.write(e.get())
 	
     # end file
