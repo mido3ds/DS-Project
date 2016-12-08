@@ -683,6 +683,9 @@ namespace Log
 		int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = kill_delay, &FT = KD + FD;
 
 		outFile << KTS << ' ' << S << ' ' << FD << ' ' << KD<< ' ' << FT << '\n';
+
+		last_killed[e->Region] += 1;
+		all_killed[e->Region] += 1;
 	}
 
 	// add towers data to file
@@ -772,6 +775,8 @@ namespace Log
 				 <<	last_killed[region] << "	"
 				 << all_killed[region] << "		"
 				 << c.towers[region].unpaved << '\n';
+
+			last_killed[region] = 0;		// reset it for second time step
 		}
 	}
 }
