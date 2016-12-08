@@ -51,8 +51,8 @@ namespace CASTLE
 			int act_count = 0;		// counter to store in array
 
 			// enemies fire, move and be killed
-			ENEMY::Loop(T.firstShielded, T, timer, active, act_count);
-			ENEMY::Loop(T.firstEnemy, T, timer, active, act_count);
+			ENEMY::Loop(T.firstShielded, &T, timer, active, act_count);
+			ENEMY::Loop(T.firstEnemy, &T, timer, active, act_count);
 
 			// tower fires
 			TOWER::Fire(&T, active, act_count, timer);
@@ -272,7 +272,7 @@ namespace TOWER
 		if (T->firstShielded)
 			ENEMY::Destroy(T->firstShielded);
 
-		T->firstEnemy = T->firtShielded = nullptr;
+		T->firstEnemy = T->firstShielded = nullptr;
 	}
 }
 
@@ -308,9 +308,9 @@ namespace ENEMY
 	{
 		while (e && ENEMY::IsActive(*e, timer))
 		{
-			ENEMY::Move(*e, T);
+			ENEMY::Move(*e, *T);
 
-			ENEMY::Fire(e, &T);
+			ENEMY::Fire(e, T);
 
 			active[act_count++] = e;
 
@@ -550,6 +550,23 @@ namespace ENEMY
 		}
 	} 
 
+	char GetRegion(const int &region)
+	{
+		switch (region)
+		{
+			case 1:
+				return 'A';
+			case 2:
+				return 'B';
+			case 4:
+				return 'D';
+			case 3:
+				return 'C';
+			default:
+				throw -1;
+		}
+	} 
+
 	// kill all enemies in list, remove them instantly
 	void Destroy(Enemy* e)
 	{
@@ -680,7 +697,7 @@ namespace Log
 			exit(1);
 		}
 
-		int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = kill_delay, &FT = KD + FD;
+		const int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = e->kill_delay, &FT = KD + FD;
 
 		outFile << KTS << ' ' << S << ' ' << FD << ' ' << KD<< ' ' << FT << '\n';
 
@@ -715,7 +732,7 @@ namespace Log
 		outFile << c.towers[0].unpaved << ' '	
 				<< c.towers[1].unpaved << ' '
 				<< c.towers[2].unpaved << ' '
-				<< c.towers[3].unpaved << '\n'
+				<< c.towers[3].unpaved << '\n';
 	}
 
 	// end of file
@@ -770,7 +787,7 @@ namespace Log
 
 		for (int region = A_REG; region <= D_REG; region++)
 		{
-			cout << TOWER::GetRegion(region) << "	"
+			cout << ENEMY::GetRegion(region) << "	"
 				 << c.towers[region].num_enemies << "	"
 				 <<	last_killed[region] << "	"
 				 << all_killed[region] << "		"

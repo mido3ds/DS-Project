@@ -102,6 +102,8 @@ namespace ENEMY
 
 	char GetRegion(Enemy *e);
 
+	char GetRegion(const int &region);
+
 	void Destroy(Enemy* e);
 }
 
@@ -135,9 +137,9 @@ namespace Log
 	void ToFile(Castle &c);
 
 	// end of file, state is the state of the game 
-	void End(Castle &c)s;
+	void End(Castle &c);
 
-	void ToScreen(Castle &c)
+	void ToScreen(Castle &c);
 }
 
 
