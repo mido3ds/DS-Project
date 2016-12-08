@@ -58,7 +58,10 @@ namespace CASTLE
 			TOWER::Fire(&T, active, act_count, timer);
 			
 			if (TOWER::IsDestroyed(T))
+			{
+				T.Health = 0;
 				TOWER::Transfer(c, region);
+			}
 
 			delete[] active;
 		}
@@ -141,6 +144,7 @@ namespace TOWER
 		SHIELDED::Sort(arr,size);
 		
 		Enemy** killed = new Enemy*[t->maxN_enemies];
+		assert(killed && "couldnt allocate memory for killed array");
 		int kill_count = 0;
 
 
@@ -517,13 +521,19 @@ namespace ENEMY
 
 		// calc fight delay FD = Time - arrival time
 		if (e->fight_delay == -1)	// firt time
-			e->fight_delay = time - e->arrive_time;                             
+		{
+			e->fight_delay = time - e->arrive_time;  
+			Log::total_FD += e->fight_delay;
+		}
 	}
 
 	// enemy fires at given tower
 	// paver pave with their fire power 
 	void Fire(Enemy* e,Tower* t)
 	{
+		if (TOWER::IsDestroyed(*t))
+			return;
+
 		if (ENEMY::IsPaver(*e))
 		{
 			if (e->Distance == t->unpaved && t->unpaved > 0)
@@ -706,7 +716,7 @@ namespace Log
 		}
 		
 		// write first line
-		outFile << "KTS S FD KD FT\n";
+		outFile << "KTS	  S	 FD	 KD	 FT\n";
 
 		total_enemies_beg = CASTLE::GetTotalEnemies(c);
 		tower_health_beg = c.towers[0].Health;
@@ -728,7 +738,11 @@ namespace Log
 
 		const int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = e->kill_delay, &FT = KD + FD;
 
-		outFile << KTS << ' ' << S << ' ' << FD << ' ' << KD<< ' ' << FT << '\n';
+		outFile << KTS << "	  " 
+				<< S << "	" 
+				<< FD << "	 " 
+				<< KD<< "	" 
+				<< FT << '\n';
 
 		last_killed[e->Region] += 1;
 		all_killed[e->Region] += 1;
