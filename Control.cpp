@@ -17,8 +17,8 @@ namespace Control
 	void Start()
 	{
 		Castle c; 
-		
-		// initiatlize	
+
+		// initialize	
 		Read(c);
 
 		// play
@@ -40,11 +40,11 @@ namespace Control
 	{
 		for (int timer = 0; !HasFinished(c); timer++)
 		{
+			// fight in one time step
 			CASTLE::Loop(c, timer);
 
-			Draw(c, timer);
-			
-			Interact();
+			// refresh frame
+			Refresh(c, timer);
 		}
 	}
 
@@ -180,10 +180,8 @@ namespace Control
 	}
 
 	// interacts with user depending on the choosen mode
-	void Interact()
+	void Interact(const Mode &mode)
 	{
-		static Mode mode = GetMode();
-
 		switch (mode)
 		{
 			case SILENT:
@@ -207,11 +205,18 @@ namespace Control
 	}
 
 	// refresh the frame
-	void Draw(const Castle &c, const int &timer)
+	void Refresh(const Castle &c, const int &timer)
 	{
-		if (timer == 0)	// first time
-			SetWindow();
+		/* ask user for the mode of simulation one time */
+		static Mode mode = GetMode();
 
+		// draw only if not silent
+		if (mode == SILENT)
+			return;
+		
+		/* draw on screen */
+		SetWindow();
+		
 		DrawCastle(c, timer);
 
 		// draw enemies in all regions
@@ -222,7 +227,10 @@ namespace Control
 		}
 
 		// TODO
-			// print data to user
+		/* print data on screen */
+
+		/* interact with user depending on the choosen mode */
+		Interact(mode);
 	}
 
 	// draw by a list , overloaded

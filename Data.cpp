@@ -271,6 +271,8 @@ namespace TOWER
 
 		if (T->firstShielded)
 			ENEMY::Destroy(T->firstShielded);
+
+		T->firstEnemy = T->firtShielded = nullptr;
 	}
 }
 

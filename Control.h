@@ -24,15 +24,13 @@ namespace Control
 	enum Mode {INTERACTIVE, STEP, SILENT};
 	Mode GetMode();
 
-	enum State {WIN, LOOSE};
-
 	void Start();
 	void Read(Castle&);
 	void Loop(Castle &c, const Mode &mode);
 	bool HasFinished(const Castle &c);
 	void Interact(const Mode &mode);
 
-	void Draw(const Castle &c, const int &timer);
+	void Refresh(const Castle &c, const int &timer);
 	void DrawEnemies(const Enemy* head, const int &region, const int &timer);
 	void DrawEnemies(Enemy* enemies[], const int &size, const int &region);
 } 
