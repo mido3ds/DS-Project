@@ -43,9 +43,11 @@ struct Enemy;
 namespace CASTLE
 {
 	void Initialize(Castle &C);
+	void Loop(Castle &c, const int &timer);
 	bool IsEmpty(const Castle &c);
 	bool IsDestroyed(const Castle &c);
 	int GetTotalEnemies(Castle &c);
+	void Destroy(Castle &c);
 }
 
 namespace TOWER
@@ -53,13 +55,13 @@ namespace TOWER
 	extern double c1, c2, c3;		// constants read in run-time to calculate priority enemies
 
 	void Initialize(Castle &c, const int &TH, const int &N, const int &TP);
-	void Loop(Castle &c, const int &timer);
 	bool IsEmpty(const Tower &t);
 	void Fire(Tower* t, Enemy* arr[], int size, int time);
 	bool IsDestroyed(const Tower &t);
 	void Damage(Enemy* e, Tower* t);
 	void Transfer(Castle &c, int region);
 	void _Transfer(Tower* T1, Tower* T2, TYPE type);
+	void Destroy(Tower* T);
 }
 
 namespace ENEMY
@@ -99,6 +101,8 @@ namespace ENEMY
 	bool IsFighter(const Enemy &e);
 
 	char GetRegion(Enemy *e);
+
+	void Destroy(Enemy* e);
 }
 
 namespace SHIELDED

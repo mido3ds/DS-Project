@@ -13,37 +13,38 @@
 */
 
 namespace Control
-{
-	using namespace Log;
-	
+{	
 	void Start()
 	{
-		// initiatlize
-		Castle c; 	
+		Castle c; 
+		
+		// initiatlize	
 		Read(c);
 
 		// play
 		Loop(c);
 
 		// end
-		// Log::End(c);
-		// Clean(c);
+		End(c);
+	}
+
+	// destroy castle and end log file
+	void End(Castle &c)
+	{
+		Log::End(c);
+		CASTLE::Destroy(c);
 	}
 
 	// main loop
 	void Loop(Castle &c)
 	{
-		SetWindow();
-		Mode mode = GetMode();
-
 		for (int timer = 0; !HasFinished(c); timer++)
 		{
-			// refresh frame
-			DrawCastle(c, timer);
+			CASTLE::Loop(c, timer);
 
-			TOWER::Loop(c, timer);
+			Draw(c, timer);
 			
-			_Interact(mode);
+			Interact();
 		}
 	}
 
@@ -173,14 +174,16 @@ namespace Control
 		Log::Initialize(c);
 	}
 
-	bool HasFinished(Castle &c)
+	bool HasFinished(const Castle &c)
 	{
 		return (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c));
 	}
 
 	// interacts with user depending on the choosen mode
-	void _Interact(const Mode &mode)
+	void Interact()
 	{
+		static Mode mode = GetMode();
+
 		switch (mode)
 		{
 			case SILENT:
@@ -201,5 +204,192 @@ namespace Control
 				return;
 			}
 		}
+	}
+
+	// refresh the frame
+	void Draw(const Castle &c, const int &timer)
+	{
+		if (timer == 0)	// first time
+			SetWindow();
+
+		DrawCastle(c, timer);
+
+		// draw enemies in all regions
+		for (int region = A_REG; region<= D_REG; region++)
+		{
+			DrawEnemies(c.towers[region].firstEnemy, region, timer);
+			DrawEnemies(c.towers[region].firstShielded, region, timer);
+		}
+
+		// TODO
+			// print data to user
+	}
+
+	// draw by a list , overloaded
+	void DrawEnemies(const Enemy* head, const int &region, const int &timer)
+	{
+		int CountEnemies = 0;	//count Enemies at the same distance to draw them vertically if they are <= 15 enemy else print number of enemy in the region
+		bool draw = true;
+		Enemy* e = head;
+
+		for(int distance = ((CmdWidth/2) - (CastleWidth/2)); distance > 1; distance--)
+		{
+			CountEnemies = 0;
+
+			while (e && ENEMY::IsActive(e, timer))
+			{	
+				if(e->Distance == distance && e->Region == region)
+					CountEnemies++;
+				e = e->next;
+			}
+
+			if(CountEnemies>15)
+			{
+				draw = false;
+				break;
+			}
+
+		}
+
+		if(draw)
+		{
+			e = head;
+
+			for(int distance = ((CmdWidth/2)-(CastleWidth/2)); distance > 1; distance--)
+			{
+				CountEnemies = 0;
+
+				while (e && ENEMY::IsActive(e, timer))
+				{	
+					if(e->Distance == distance)
+					{
+						DrawEnemy(*e, CountEnemies);
+						CountEnemies++;
+					}
+					e = e->next;
+				}
+
+			}
+
+
+		}
+		else // print message maximum reached in this region
+		{
+			int x;int y;
+			if(region==A_REG)
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)-(CastleLength/4);
+			}
+			else if(region==B_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)-(CastleLength/4);
+
+
+			}
+			else if(region==C_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			else
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			gotoxy(x, y);
+			cout<<"Maximum limit";
+		}
+
+
+		gotoxy(0, CmdHeight-1);
+	}
+
+	// overloading original function to be more efficient (array)
+	void DrawEnemies(Enemy* enemies[], const int &size, const int &region)
+	{
+		int CountEnemies =0;	//count Enemies at the same distance to draw them vertically if they are <= 15 enemy else print number of enemy in the region
+		bool draw = true;
+		for(int distance = ((CmdWidth/2) - (CastleWidth/2)); distance>1; distance--)
+		{
+			CountEnemies=0;
+
+			for(int i=0;i<size;i++)
+			{	
+				// modification to ignore nullptrs 
+				if (enemies[i] == NULL)	
+					continue;
+
+				if(enemies[i]->Distance==distance && enemies[i]->Region == region)
+				{
+					CountEnemies++;
+				}
+			}
+			if(CountEnemies>15)
+			{
+				draw=false;
+				break;
+			}
+
+		}
+		if(draw)
+		{
+			for(int distance=((CmdWidth/2)-(CastleWidth/2));distance>1;distance--)
+			{
+				CountEnemies=0;
+
+				for(int i=0;i<size;i++)
+				{	
+					// modification to ignore nullptrs 
+					if (enemies[i] == NULL)	
+						continue;
+
+					if(enemies[i]->Distance==distance && enemies[i]->Region == region)
+					{
+						DrawEnemy(*(enemies[i]),CountEnemies);
+						CountEnemies++;
+					}
+				}
+
+			}
+
+
+		}
+		else // print message maximum reached in this region
+		{
+			int x;int y;
+			if(region==A_REG)
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)-(CastleLength/4);
+			}
+			else if(region==B_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)-(CastleLength/4);
+
+
+			}
+			else if(region==C_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			else
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			gotoxy(x, y);
+			cout<<"Maximum limit";
+		}
+
+
+		gotoxy(0, CmdHeight-1);
 	}
 }
