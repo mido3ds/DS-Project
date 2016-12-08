@@ -28,7 +28,6 @@ namespace Control
 	void End(Castle &c);
 	void Read(Castle&);
 	void Loop(Castle &c);
-	bool HasFinished(const Castle &c);
 	void Interact(const Mode &mode);
 
 	void Refresh(const Castle &c, const int &timer);

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <cassert>
 #include "Const.h"
 using namespace std;
 /*  Data header file, contains all data structure to store data of castles and enemies
@@ -48,6 +49,7 @@ namespace CASTLE
 	bool IsDestroyed(const Castle &c);
 	int GetTotalEnemies(const Castle &c);
 	void Destroy(Castle &c);
+	bool HasFinished(Castle &c);
 }
 
 namespace TOWER
@@ -62,6 +64,7 @@ namespace TOWER
 	void Transfer(Castle &c, int region);
 	void _Transfer(Tower* T1, Tower* T2, TYPE type);
 	void Destroy(Tower* T);
+	bool HasFinished(Tower &T);
 }
 
 namespace ENEMY

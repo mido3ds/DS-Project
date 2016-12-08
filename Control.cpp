@@ -38,7 +38,7 @@ namespace Control
 	// main loop
 	void Loop(Castle &c)
 	{
-		for (int timer = 0; !HasFinished(c); timer++)
+		for (int timer = 0; !CASTLE::HasFinished(c); timer++)
 		{
 			// fight in one time step
 			CASTLE::Loop(c, timer);
@@ -174,10 +174,6 @@ namespace Control
 		Log::Initialize(C);
 	}
 
-	bool HasFinished(const Castle &c)
-	{
-		return (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c));
-	}
 #undef max(a, b)
 	// interacts with user depending on the choosen mode
 	void Interact(const Mode &mode)

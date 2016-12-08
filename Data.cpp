@@ -89,6 +89,12 @@ namespace CASTLE
 		for (int i = A_REG; i < D_REG; i++)
 			TOWER::Destroy(&c.towers[i]);
 	}
+
+	// has the war ended for this castle?
+	bool HasFinished(Castle &c)
+	{
+		return (TOWER::HasFinished(c.towers[0]) && TOWER::HasFinished(c.towers[1]) && TOWER::HasFinished(c.towers[2]) && TOWER::HasFinished(c.towers[3]));
+	}
 }
 
 namespace TOWER
@@ -231,7 +237,7 @@ namespace TOWER
 		}
 
 		// iterate through all enemies in list1
-		while (list2)
+		while (list2 && list1)
 		{
 			// to move it
 			Enemy* temp = list1;
@@ -240,7 +246,10 @@ namespace TOWER
 			list1 = list1->next;
 
 			// cut it
-			list1->prev = temp->next = temp->prev = nullptr;
+			if (list1)
+				list1->prev = nullptr;
+			
+			temp->next = temp->prev = nullptr;
 
 			// move list2 to the proper position
 			while (list2 && temp->arrive_time > list2->arrive_time)
@@ -273,6 +282,12 @@ namespace TOWER
 			ENEMY::Destroy(T->firstShielded);
 
 		T->firstEnemy = T->firstShielded = nullptr;
+	}
+
+	// one tower will finish fighting when its destroyed or empty
+	bool HasFinished(Tower &T)
+	{
+		return (IsEmpty(T) || IsDestroyed(T));
 	}
 }
 
@@ -355,9 +370,11 @@ namespace ENEMY
 	// takes enemy to move, tower to detect if possible to move depending on unpaved are
 	void Move(Enemy &e, const Tower &T)
 	{
+		e.Distance -= e.speed;
+
 		// don't let enemy get iside tower
-		if (e.Distance > MIN_DISTANCE_FROM_CASTLE)
-			e.Distance -= e.speed;
+		if (e.Distance < MIN_DISTANCE_FROM_CASTLE)
+			e.Distance = MIN_DISTANCE_FROM_CASTLE;
 
 		// if entered paved area, return him to the beginnig of it
 		if (e.Distance < T.unpaved)
@@ -493,6 +510,8 @@ namespace ENEMY
 			k++;
 
 		// update health
+		assert(e->Distance && "enemy distance cant be zero, a try to divide on zero");
+
 		e->Health -= ((1.0 / e->Distance) * t->fire_power * (1.0 / k));  
 
 		// calc fight delay FD = Time - arrival time
@@ -506,11 +525,18 @@ namespace ENEMY
 	{
 		if (ENEMY::IsPaver(*e))
 		{
-			if (e->Distance == t->unpaved)
+			if (e->Distance == t->unpaved && t->unpaved > 0)
 			{
 				// paves and moves to the beginnig of unpaved area
 			    t->unpaved = t->unpaved - e->fire_power;
-				e->Distance = t->unpaved;	
+
+				// correct it if it became smaller than zero
+				if (t->unpaved < 0)
+					t->unpaved = 0;
+
+				e->Distance = t->unpaved;
+				if (e->Distance == 0)
+					e->Distance = MIN_DISTANCE_FROM_CASTLE;		// correct position to not let him enter tower
 			}
 		}
 		else
@@ -621,6 +647,8 @@ namespace SHIELDED
 		int i = 0;
       	while (i < size && ENEMY::IsShielded(arr[i]))
 		{
+			assert(arr[i]->Distance && "distance is zero, a try to divide on zero");
+
 			arr[i]->priority = (arr[i]->fire_power /arr[i]->Distance) * TOWER::c1 + TOWER::c2/((time - arr[i]->arrive_time)+1)+arr[i]->Health *TOWER::c3;
 			i++;
 		}
@@ -756,6 +784,8 @@ namespace Log
 
 			outFile << "Total Enemies = " << total_enemies_beg << '\n';
 
+			assert(total_enemies_beg && "Enemies at beginning are zero, a try to divide on zero occurred");
+
 			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
 			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
 		}
@@ -768,6 +798,8 @@ namespace Log
 
 			outFile << "Number of killed enemies = " << total_killed << '\n';
 			outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
+
+			assert(total_killed && "total killed cant be 0 and the game is LOST, a try do divide on 0");
 
 			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
 			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
