@@ -136,6 +136,8 @@ namespace Log
 
 	// end of file, state is the state of the game 
 	void End(Castle &c)s;
+
+	void ToScreen(Castle &c)
 }
 
 

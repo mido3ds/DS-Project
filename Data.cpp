@@ -645,6 +645,8 @@ namespace Log
 	int total_KD = 0;
 	int total_enemies_beg = 0;		// at beginning
 	int tower_health_beg = 0;		// at beginning
+	int last_killed[NUM_OF_TOWERS] = {0, 0, 0, 0};
+	int all_killed[NUM_OF_TOWERS] = {0, 0, 0, 0};
 
 
 	// to init the file
@@ -753,5 +755,23 @@ namespace Log
 			
 
 		outFile.close();
+	}
+
+	// print tower information to screen
+	void ToScreen(Castle &c)
+	{
+		// print a line to user like this "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance"
+		// loop through towrs and print their data 
+
+		cout << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
+
+		for (int region = A_REG; region <= D_REG; region++)
+		{
+			cout << TOWER::GetRegion(region) << "	"
+				 << c.towers[region].num_enemies << "	"
+				 <<	last_killed[region] << "	"
+				 << all_killed[region] << "		"
+				 << c.towers[region].unpaved << '\n';
+		}
 	}
 }

@@ -216,7 +216,7 @@ namespace Control
 		
 		/* draw on screen */
 		SetWindow();
-		
+
 		DrawCastle(c, timer);
 
 		// draw enemies in all regions
@@ -226,8 +226,8 @@ namespace Control
 			DrawEnemies(c.towers[region].firstShielded, region, timer);
 		}
 
-		// TODO
 		/* print data on screen */
+		Log::ToScreen(c);
 
 		/* interact with user depending on the choosen mode */
 		Interact(mode);
