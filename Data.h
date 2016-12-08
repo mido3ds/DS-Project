@@ -46,7 +46,7 @@ namespace CASTLE
 	void Loop(Castle &c, const int &timer);
 	bool IsEmpty(const Castle &c);
 	bool IsDestroyed(const Castle &c);
-	int GetTotalEnemies(Castle &c);
+	int GetTotalEnemies(const Castle &c);
 	void Destroy(Castle &c);
 }
 
@@ -126,6 +126,8 @@ namespace Log
 	extern int total_KD;
 	extern int total_enemies_beg;		// at beginning
 	extern int tower_health_beg;		// at beginning
+	extern int last_killed[NUM_OF_TOWERS];
+	extern int all_killed[NUM_OF_TOWERS];
 
 	// to init the file
 	void Initialize(Castle &c);
@@ -134,12 +136,12 @@ namespace Log
 	void ToFile(Enemy* e, const int &time);
 
 	// add towers data to file
-	void ToFile(Castle &c);
+	void ToFile(const Castle &c);
 
 	// end of file, state is the state of the game 
-	void End(Castle &c);
+	void End(const Castle &c);
 
-	void ToScreen(Castle &c);
+	void ToScreen(const Castle &c);
 }
 
 

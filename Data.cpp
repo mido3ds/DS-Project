@@ -78,7 +78,7 @@ namespace CASTLE
 				&& TOWER::IsDestroyed(c.towers[D_REG]));
 	}
 
-	int GetTotalEnemies(Castle &c)
+	int GetTotalEnemies(const Castle &c)
 	{
 		return (c.towers[0].num_enemies + c.towers[1].num_enemies + c.towers[2].num_enemies + c.towers[3].num_enemies);
 	}
@@ -293,7 +293,7 @@ namespace ENEMY
         e->Region = R;
 		e->priority = -1;
         
-        e->Distance = 60 + e->arrive_time * e->speed;
+        e->Distance = 60;
         e->fight_delay = -1;
         e->kill_delay = -1;
         e->next = NULL;
@@ -554,13 +554,13 @@ namespace ENEMY
 	{
 		switch (region)
 		{
-			case 1:
+			case 0:
 				return 'A';
-			case 2:
+			case 1:
 				return 'B';
-			case 4:
-				return 'D';
 			case 3:
+				return 'D';
+			case 2:
 				return 'C';
 			default:
 				throw -1;
@@ -706,7 +706,7 @@ namespace Log
 	}
 
 	// add towers data to file
-	void ToFile(Castle &c)
+	void ToFile(const Castle &c)
 	{
 		ofstream outFile("output.txt", ios::app);
 		if (!outFile)
@@ -736,7 +736,7 @@ namespace Log
 	}
 
 	// end of file
-	void End(Castle &c)
+	void End(const Castle &c)
 	{
 		ofstream outFile("output.txt", ios::app);
 		if (!outFile)
@@ -756,8 +756,8 @@ namespace Log
 
 			outFile << "Total Enemies = " << total_enemies_beg << '\n';
 
-			outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_enemies_beg << '\n';
-			outFile << "Average Kill Delay = " << total_KD / total_enemies_beg << '\n';
+			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
+			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
 		}
 		else if (CASTLE::IsDestroyed(c)) // LOOSE
 		{
@@ -769,8 +769,8 @@ namespace Log
 			outFile << "Number of killed enemies = " << total_killed << '\n';
 			outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
 
-			outFile << "Average Fight Delay = " << (total_FD + total_KD) / total_killed << '\n';
-			outFile << "Average Kill Delay = " << total_KD / total_killed << '\n';
+			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
+			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
 		}
 			
 
@@ -778,7 +778,7 @@ namespace Log
 	}
 
 	// print tower information to screen
-	void ToScreen(Castle &c)
+	void ToScreen(const Castle &c)
 	{
 		// print a line to user like this "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance"
 		// loop through towrs and print their data 
@@ -787,10 +787,10 @@ namespace Log
 
 		for (int region = A_REG; region <= D_REG; region++)
 		{
-			cout << ENEMY::GetRegion(region) << "	"
-				 << c.towers[region].num_enemies << "	"
-				 <<	last_killed[region] << "	"
-				 << all_killed[region] << "		"
+			cout << ENEMY::GetRegion(region) << "		"
+				 << c.towers[region].num_enemies << "		"
+				 <<	last_killed[region] << "		"
+				 << all_killed[region] << "			"
 				 << c.towers[region].unpaved << '\n';
 
 			last_killed[region] = 0;		// reset it for second time step

@@ -171,14 +171,14 @@ namespace Control
 		}
 
 		// initialize the log file
-		Log::Initialize(c);
+		Log::Initialize(C);
 	}
 
 	bool HasFinished(const Castle &c)
 	{
 		return (CASTLE::IsEmpty(c) || CASTLE::IsDestroyed(c));
 	}
-
+#undef max(a, b)
 	// interacts with user depending on the choosen mode
 	void Interact(const Mode &mode)
 	{
@@ -218,13 +218,8 @@ namespace Control
 		SetWindow();
 
 		DrawCastle(c, timer);
-
-		// draw enemies in all regions
-		for (int region = A_REG; region<= D_REG; region++)
-		{
-			DrawEnemies(c.towers[region].firstEnemy, region, timer);
-			DrawEnemies(c.towers[region].firstShielded, region, timer);
-		}
+		
+		DrawEnemies(c, timer);
 
 		/* print data on screen */
 		Log::ToScreen(c);
@@ -233,18 +228,141 @@ namespace Control
 		Interact(mode);
 	}
 
-	// draw by a list , overloaded
-	void DrawEnemies(const Enemy* head, const int &region, const int &timer)
+	void DrawEnemies(const Castle &c, const int &timer)
+	{
+		for (int i = A_REG; i <= D_REG; i++)
+			DrawEnemies(&c.towers[i], i, timer);
+	}
+
+	// draw a tower, overloaded
+	void DrawEnemies(const Tower* T, const int &region, const int &timer)
 	{
 		int CountEnemies = 0;	//count Enemies at the same distance to draw them vertically if they are <= 15 enemy else print number of enemy in the region
 		bool draw = true;
-		Enemy* e = head;
+
+		if (!T)
+			throw -1;
+		if (!T->firstEnemy && !T->firstShielded)	// if no enemies return
+			return;
+
+		Enemy* e = nullptr;
+		for(int distance = ((CmdWidth/2) - (CastleWidth/2)); distance > 1; distance--)
+		{
+			CountEnemies = 0;
+			
+			// traverse through normal enemies
+			e = T->firstEnemy;
+			while (e && ENEMY::IsActive(*e, timer))
+			{	
+				if(e->Distance == distance && e->Region == region)
+					CountEnemies++;
+				e = e->next;
+			}
+
+			// traverse through shielded
+			e = T->firstShielded;
+			while (e && ENEMY::IsActive(*e, timer))
+			{
+				if(e->Distance == distance && e->Region == region)
+					CountEnemies++;
+				e = e->next;
+			}
+
+			if(CountEnemies>15)
+			{
+				draw = false;
+				break;
+			}
+
+		}
+
+		if(draw)
+		{
+			for(int distance = ((CmdWidth/2)-(CastleWidth/2)); distance > 1; distance--)
+			{
+				CountEnemies = 0;
+
+				// traverse through normal
+				e = T->firstEnemy;
+				while (e && ENEMY::IsActive(*e, timer))
+				{	
+					if(e->Distance == distance)
+					{
+						DrawEnemy(*e, CountEnemies);
+						CountEnemies++;
+					}
+					e = e->next;
+				}
+
+				// traverse through shielded
+				e = T->firstShielded;
+				while (e && ENEMY::IsActive(*e, timer))
+				{	
+					if(e->Distance == distance)
+					{
+						DrawEnemy(*e, CountEnemies);
+						CountEnemies++;
+					}
+					e = e->next;
+				}
+
+			}
+
+
+		}
+		else // print message maximum reached in this region
+		{
+			int x;int y;
+			if(region==A_REG)
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)-(CastleLength/4);
+			}
+			else if(region==B_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)-(CastleLength/4);
+
+
+			}
+			else if(region==C_REG)
+			{
+				x= CastleXStrt+CastleWidth+30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			else
+			{
+				x= CastleXStrt-30;
+				y= (CmdHeight/2)+(CastleLength/4);
+
+			}
+			gotoxy(x, y);
+			cout<<"Maximum limit";
+		}
+
+
+		gotoxy(0, CmdHeight-1);
+	}
+
+
+	// draw by a list , overloaded
+	void DrawEnemies(Enemy* head, const int &region, const int &timer)
+	{
+		int CountEnemies = 0;	//count Enemies at the same distance to draw them vertically if they are <= 15 enemy else print number of enemy in the region
+		bool draw = true;
+		Enemy* e = nullptr;
+
+		// if no active or no enemy, return 
+		if (!head || !ENEMY::IsActive(*head, timer))
+			return;
 
 		for(int distance = ((CmdWidth/2) - (CastleWidth/2)); distance > 1; distance--)
 		{
 			CountEnemies = 0;
-
-			while (e && ENEMY::IsActive(e, timer))
+			
+			e = head;
+			while (e && ENEMY::IsActive(*e, timer))
 			{	
 				if(e->Distance == distance && e->Region == region)
 					CountEnemies++;
@@ -261,13 +379,12 @@ namespace Control
 
 		if(draw)
 		{
-			e = head;
-
 			for(int distance = ((CmdWidth/2)-(CastleWidth/2)); distance > 1; distance--)
 			{
 				CountEnemies = 0;
 
-				while (e && ENEMY::IsActive(e, timer))
+				e = head;
+				while (e && ENEMY::IsActive(*e, timer))
 				{	
 					if(e->Distance == distance)
 					{

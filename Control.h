@@ -25,12 +25,15 @@ namespace Control
 	Mode GetMode();
 
 	void Start();
+	void End(Castle &c);
 	void Read(Castle&);
-	void Loop(Castle &c, const Mode &mode);
+	void Loop(Castle &c);
 	bool HasFinished(const Castle &c);
 	void Interact(const Mode &mode);
 
 	void Refresh(const Castle &c, const int &timer);
-	void DrawEnemies(const Enemy* head, const int &region, const int &timer);
+	void DrawEnemies(const Castle &c, const int &timer);
+	void DrawEnemies(const Tower* T, const int &region, const int &timer);
+	void DrawEnemies(Enemy* head, const int &region, const int &timer);
 	void DrawEnemies(Enemy* enemies[], const int &size, const int &region);
 } 
