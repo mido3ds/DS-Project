@@ -20,5 +20,6 @@
 #define SECOND          1000			// in milliseconds
 #define MIN_DISTANCE_FROM_CASTLE    2
 #define DEFAULT 5
+#define TO_CENTRE "                                 "
 
 #define space(num) setw(num)

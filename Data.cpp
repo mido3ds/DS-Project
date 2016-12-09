@@ -998,12 +998,13 @@ namespace Log
 	{
 		// print a line to user like this "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance"
 		// loop through towrs and print their data 
-
-		cout << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
+		
+		cout << TO_CENTRE << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
 		int align = 3;
 		for (int region = A_REG; region <= D_REG; region++)
 		{
-			cout << space(3) << ENEMY::GetRegion(region) << space(DEFAULT * align)
+			cout << TO_CENTRE << space(3) 
+				 << ENEMY::GetRegion(region) << space(DEFAULT * align)
 				 << c.towers[region].num_enemies << space(DEFAULT * align)
 				 <<	last_killed[region] << space(DEFAULT * align + 6)
 				 << all_killed[region] << space(DEFAULT * align + 6)
