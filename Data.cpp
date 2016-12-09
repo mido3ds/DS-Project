@@ -227,7 +227,9 @@ namespace TOWER
 	// move enemies from Tower 1 --> Tower 2
 	void _Transfer(Tower* T1, Tower* T2, TYPE type, const REGION &Region)
 	{
-		assert(!TOWER::IsEmpty(*T1) && "Attempt to move an empty tower");
+		//assert(!TOWER::IsEmpty(*T1) && "Attempt to move an empty tower");
+		if (TOWER::IsEmpty(*T1))
+			return;
 
 		Enemy* list1 = nullptr; Enemy* list2 = nullptr;
 		// choose the list to transfer
@@ -446,6 +448,9 @@ namespace ENEMY
 			if (ENEMY::CanFire(e, timer))
 				ENEMY::Fire(e, T);
 
+			if (ENEMY::IsHelicopter(e))
+				HELICOPTER::Drop(e, T, timer);
+
 			active[act_count++] = e;
 
 			// go to next enemy
@@ -578,6 +583,11 @@ namespace ENEMY
 		return (e.Type == FITR);
 	}
 
+	bool IsHelicopter(Enemy *e)
+	{
+		return (e->Type == HELICOPTER_t);
+	}
+
 	// remove enemy from the list 
 	void Kill(Enemy* e, Tower* t, const int &time)      
 	{
@@ -646,24 +656,12 @@ namespace ENEMY
 	void Fire(Enemy* e,Tower* t)
 	{
 		if (TOWER::IsDestroyed(*t))
-			return;
+			return;		// عشان الضرب ف الميت حرام
 
 		if (ENEMY::IsPaver(*e))
-		{
-			if (e->Distance == t->unpaved && t->unpaved > 0)
-			{
-				// paves and moves to the beginnig of unpaved area
-			    t->unpaved = t->unpaved - e->fire_power;
-
-				// correct it if it became smaller than zero
-				if (t->unpaved < 0)
-					t->unpaved = 0;
-
-				e->Distance = t->unpaved;
-				if (e->Distance == 0)
-					e->Distance = MIN_DISTANCE_FROM_CASTLE;		// correct position to not let him enter tower
-			}
-		}
+			PAVER::Pave(e, t);
+		else if (ENEMY::IsDoctor(e))
+			DOCTOR::Heal(e);
 		else
 			TOWER::Damage(e, t);
 	}
@@ -761,6 +759,27 @@ namespace ENEMY
 		delete e;
 	}
 
+	bool IsDoctor(Enemy* e)
+	{
+		return (e->Type == DOC);	
+	}
+
+	Enemy* _Generate(const int &timer, const int &region, const int &distance)
+	{
+		srand (time(NULL));
+
+		int id = ++Log::total_enemies_beg;
+		int health = rand() % 300 + 1; 
+		int type = rand() % 4;
+		int firePow = rand() % 100;
+		int speed = rand() % 5 + 1;
+		int reload = rand() % 8 + 1;
+		
+		Enemy* temp = ENEMY::Initialize(id, type, timer + 1, health, firePow, reload, speed, (REGION)region);
+		temp->Distance = distance;
+
+		return temp;
+	}
 }
 
 namespace SHIELDED
@@ -838,6 +857,70 @@ namespace SHIELDED
 		}
 	}
 }
+
+namespace DOCTOR
+{
+	void Heal(Enemy* d)
+	{
+		// increase health of next and prev
+		
+		if (d->next && !ENEMY::IsHelicopter(d->next))
+			d->next->Health += d->fire_power / 2.0;
+
+		if (d->prev && !ENEMY::IsHelicopter(d->prev))
+			d->prev->Health += d->fire_power / 2.0;
+	}
+}
+
+namespace PAVER
+{
+	void Pave(Enemy* e, Tower* t)
+	{
+		if (e->Distance == t->unpaved && t->unpaved > 0)
+		{
+			// paves and moves to the beginnig of unpaved area
+			t->unpaved = t->unpaved - e->fire_power;
+
+			// correct it if it became smaller than zero
+			if (t->unpaved < 0)
+				t->unpaved = 0;
+
+			e->Distance = t->unpaved;
+			if (e->Distance == 0)
+				e->Distance = MIN_DISTANCE_FROM_CASTLE;		// correct position to not let him enter tower
+		}
+	}
+}
+
+namespace HELICOPTER
+{
+	// genarates random enemies and add them to next of heli
+	void Drop(Enemy* h, Tower* T, const int &timer)
+	{
+		assert(h && T && "helicopter or tower given to drop is NULL");
+
+		if (!ENEMY::CanFire(h, timer))
+			return;
+
+		for (int i = 0; i < h->fire_power / (static_cast<double>(h->Distance)); i++, h->fire_power--)
+		{
+			Enemy* temp = ENEMY::_Generate(timer, h->Region, h->Distance);
+
+			temp->prev = h;
+			temp->next = h->next;
+
+			if (h->next)
+				h->next->prev = temp;
+
+			h->next = temp;
+
+			T->num_enemies++;
+		}
+
+	}
+}
+
+
 
 namespace Log
 {
@@ -998,12 +1081,13 @@ namespace Log
 	{
 		// print a line to user like this "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance"
 		// loop through towrs and print their data 
-
-		cout << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
+		
+		cout << TO_CENTRE << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
 		int align = 3;
 		for (int region = A_REG; region <= D_REG; region++)
 		{
-			cout << space(3) << ENEMY::GetRegion(region) << space(DEFAULT * align)
+			cout << TO_CENTRE << space(3) 
+				 << ENEMY::GetRegion(region) << space(DEFAULT * align)
 				 << c.towers[region].num_enemies << space(DEFAULT * align)
 				 <<	last_killed[region] << space(DEFAULT * align + 6)
 				 << all_killed[region] << space(DEFAULT * align + 6)

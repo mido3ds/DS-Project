@@ -3,6 +3,8 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
+#include <io.h>
+#include <fcntl.h>
 #include "Data.h"
 using namespace std;
 
@@ -37,3 +39,13 @@ void DrawRegions(const Castle & C);
 /* draw a single enemy using its distance from the castle */
 void DrawEnemy(const Enemy& E, int Ypos=0);
 
+void PutAt(char q, int x, int y);
+
+namespace HELICOPTER
+{
+	void Draw(const int &x, const int &y);
+}
+namespace DOCTOR
+{
+	void Draw(const int &x, const int &y);
+}

@@ -3,6 +3,9 @@
 #include <fstream>
 #include <cassert>
 #include <iomanip>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
 #include "Const.h"
 #include "Sound.h"
 using namespace std;
@@ -26,7 +29,9 @@ using namespace std;
 enum TYPE {
 	PVR,
 	FITR,
-	SHLD_FITR
+	SHLD_FITR,
+	DOC,
+	HELICOPTER_t
 };
 
 //The four regions: A, B, C , and D
@@ -109,11 +114,17 @@ namespace ENEMY
 
 	bool IsFighter(const Enemy &e);
 
+	bool IsDoctor(Enemy* e);
+
+	bool IsHelicopter(Enemy *e);
+
 	char GetRegion(Enemy *e);
 
 	char GetRegion(const int &region);
 
 	void Destroy(Enemy* e);
+
+	Enemy* _Generate(const int &timer, const int &region, const int &distance);
 }
 
 namespace SHIELDED
@@ -153,6 +164,20 @@ namespace Log
 	void ToScreen(const Castle &c);
 }
 
+namespace DOCTOR
+{
+	void Heal(Enemy* d);
+}
+
+namespace PAVER
+{
+	void Pave(Enemy* e, Tower* t);
+}
+
+namespace HELICOPTER
+{
+	void Drop(Enemy* h, Tower* T, const int &timer);
+}
 
 /* Structures */
 struct Tower
