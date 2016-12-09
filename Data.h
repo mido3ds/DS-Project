@@ -67,6 +67,8 @@ namespace TOWER
 	void _Transfer(Tower* T1, Tower* T2, TYPE type);
 	void Destroy(Tower* T);
 	bool HasFinished(Tower &T);
+	int GetNumOfShielded(Tower *T);
+	int GetNumOfNormal(Tower *T);
 }
 
 namespace ENEMY

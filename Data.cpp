@@ -182,6 +182,7 @@ namespace TOWER
 
 	}
 
+
 	bool IsDestroyed(const Tower &t)
 	{
 		return (t.Health <= 0);
@@ -214,7 +215,7 @@ namespace TOWER
 		for (int i = 0; i < 3; nextTower = (nextTower + 1) % NUM_OF_TOWERS, i++)
 		{
 			// found non-destroyed tower, transfer to it
-			if (c.towers[nextTower].Health > 0)
+			if (!TOWER::IsDestroyed(c.towers[nextTower]))
 			{
 				_Transfer(&c.towers[region], &c.towers[nextTower], SHLD_FITR);
 				_Transfer(&c.towers[region], &c.towers[nextTower], FITR);
@@ -226,6 +227,8 @@ namespace TOWER
 	// move enemies from Tower 1 --> Tower 2
 	void _Transfer(Tower* T1, Tower* T2, TYPE type)
 	{
+		assert(!TOWER::IsEmpty(*T1) && "Attempt to move an empty tower");
+
 		Enemy* list1 = nullptr; Enemy* list2 = nullptr;
 		// choose the list to transfer
 		switch (type)
@@ -240,8 +243,37 @@ namespace TOWER
 				break;
 		}
 
-		// iterate through all enemies in list1
-		while (list2 && list1)
+		// when T2 is empty, just make it point at all enemies in T1
+		if (TOWER::IsEmpty(*T2))
+		{
+			if (type == SHLD_FITR)
+			{
+				int num = TOWER::GetNumOfShielded(T1);
+
+				T2->firstShielded = T1->firstShielded;
+				T1->firstShielded = NULL;
+
+				// update number of enemeies
+				T1->num_enemies -= num;
+				T2->num_enemies += num;
+			}
+			else 
+			{
+				int num = TOWER::GetNumOfNormal(T1);
+
+				T2->firstEnemy = T1->firstEnemy;
+				T1->firstEnemy = NULL;
+
+				// update number of enemeies
+				T1->num_enemies -= num;
+				T2->num_enemies += num;
+			}
+			return;
+
+		}
+
+		// iterate through all enemies in list1 till it is empty
+		while (list1)
 		{
 			// to move it
 			Enemy* temp = list1;
@@ -249,7 +281,7 @@ namespace TOWER
 			// now list points at next one
 			list1 = list1->next;
 
-			// cut it
+			// cut it from list1, if list1 became null you dont need to do that
 			if (list1)
 				list1->prev = nullptr;
 			
@@ -262,7 +294,7 @@ namespace TOWER
 			ENEMY::_InsertBefore(temp, list2);
 
 			// if list2 is first one, insert at first position
-			if (temp->prev == nullptr)
+			if (list2 && temp->prev == nullptr)
 			{
 				// insert at first
 				if (type == SHLD_FITR)
@@ -270,14 +302,23 @@ namespace TOWER
 				else 
 					T2->firstEnemy = list1;
 			}
+
+			// update number of enemies in both towers
+			T1->num_enemies--;
+			T2->num_enemies++;
 		}
+
+		// now tower1 points at nothing
+		if (type == SHLD_FITR)
+			T1->firstShielded = NULL;
+		else
+			T1->firstEnemy = NULL;
 	}
 
 	// delete all lists in tower
 	void Destroy(Tower* T)
 	{
-		if (!T)
-			throw -1;
+		assert(T && "Attempt to destroy null tower");
 
 		if (T->firstEnemy)
 			ENEMY::Destroy(T->firstEnemy);
@@ -292,6 +333,38 @@ namespace TOWER
 	bool HasFinished(Tower &T)
 	{
 		return (IsEmpty(T) || IsDestroyed(T));
+	}
+
+	int GetNumOfShielded(Tower *T)
+	{
+		assert(T && "tower ptr is NULL");
+
+		Enemy* temp = T->firstShielded;
+		int num = 0;
+
+		while (temp)
+		{
+			num++;
+			temp = temp->next;
+		}
+
+		return num;
+	}
+
+	int GetNumOfNormal(Tower *T)
+	{
+		assert(T && "tower ptr is NULL");
+
+		Enemy* temp = T->firstEnemy;
+		int num = 0;
+
+		while (temp)
+		{
+			num++;
+			temp = temp->next;
+		}
+
+		return num;
 	}
 }
 

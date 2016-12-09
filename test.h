@@ -11,8 +11,29 @@ using namespace Control;
 
 int main()
 {
-    Start();
+	Castle c;
+	Read(c);
+
+	for (int region = A_REG; region < D_REG; region++)
+	{
+		TOWER::_Transfer(&c.towers[region], &c.towers[region+ 1], FITR);
+		TOWER::_Transfer(&c.towers[region], &c.towers[region + 1], SHLD_FITR);
+
+		Refresh(c, region);
+	}
+
+	for (int timer = 3; timer < 10; timer++)
+	{
+		CASTLE::Loop(c, timer);
+
+		Refresh(c, timer);
+	}
 }
+
+//int main()
+//{
+//    Start();
+//}
 
 // int main()
 // {
