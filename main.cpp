@@ -13,7 +13,7 @@
 using namespace Control;
 
 // comment this on releasing to activate main 
-#include "test.h"
+//#include "test.h"
 
 // comment this to disable sounds
 
@@ -21,5 +21,6 @@ using namespace Control;
 #ifndef _TEST_
 int main()
 {
+	Start();
 }
 #endif  /* _TEST_ */

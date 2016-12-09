@@ -32,6 +32,9 @@
   <ItemGroup>
     <Text Include="input.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="generator.py" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{037DF17C-24F5-4F65-BE23-82940B17B777}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -121,6 +124,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

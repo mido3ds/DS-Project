@@ -18,20 +18,18 @@ class enemy(object):
 		else:
 			return "{0}    {1}     {2}     {3}     {4}     {5}     {6}\n".format(self.i, self.TY, self.T, self.H, self.Pow, self.Prd, self.R)
 			
-def GetType():
-    return random.randrange(0, 3)
-    
 TH = random.randrange(1, 500)
 N = random.randrange(1, 20)
 TP = random.randrange(1, 300)
 
 # generate enemies
 n = int(input("Number of enemies: "))
-includeSpeed = int(input("Include Enemies Speeds in File? [bonus] 0/1?"))
+#includeSpeed = int(input("Include Enemies Speeds in File? [bonus] 0/1?"))
+includeSpeed = 1
 list = []
 
 for i in range(n):
-	TY = random.randrange(0, 3)
+	TY = random.randrange(0, 5)
 	T = int(random.random() * 10) 
 	H = random.randrange(1, TH)
 	Pow = random.randrange(1, TP)

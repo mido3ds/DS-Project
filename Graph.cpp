@@ -1,4 +1,4 @@
-// DO NOT EDIT THIS! //
+﻿// DO NOT EDIT THIS! //
 
 #include "Graph.h"
 
@@ -168,7 +168,7 @@ void DrawEnemy(const Enemy& E, int Ypos)
 
 	gotoxy(x, y);
 
-	//set enemy color according to it type
+	//set enemy color according to its type
 	TYPE EnemyType = E.Type;
 	switch(EnemyType)
 	{
@@ -182,8 +182,12 @@ void DrawEnemy(const Enemy& E, int Ypos)
 		color(FOREGROUND_RED);
 	}
 
-	
-	cout<<(char)EnemyShape; //Draw the enemy
+	if (EnemyType == HELICOPTER_t)
+		HELICOPTER::Draw(x, y);
+	else if (EnemyType == DOC)
+		DOCTOR::Draw(x, y);
+	else
+		cout<<(char)EnemyShape; //Draw the enemy
 
 	color(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
 }
@@ -286,4 +290,36 @@ void DrawEnemies(Enemy* enemies[],int size)
 void PrintMsg(char*msg)
 {
 	cout << msg;
+}
+
+void PutAt(char q, int x, int y)
+{
+	gotoxy(x, y);
+	cout << (char)q;
+}
+
+namespace HELICOPTER
+{
+	void Draw(const int &x, const int &y)
+	{
+		color(FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
+
+		PutAt('X', x, y);
+
+		PutAt('\\', x - 1, y - 1);
+		PutAt('\\', x + 1, y + 1);
+
+		PutAt('/', x + 1, y - 1);
+		PutAt('/', x - 1, y + 1);
+
+	}
+}
+
+namespace DOCTOR
+{
+	void Draw(const int &x, const int &y)
+	{
+		color(FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+		PutAt(EnemyShape, x, y);  
+	}
 }
