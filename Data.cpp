@@ -182,6 +182,7 @@ namespace TOWER
 
 	}
 
+
 	bool IsDestroyed(const Tower &t)
 	{
 		return (t.Health <= 0);
@@ -214,18 +215,20 @@ namespace TOWER
 		for (int i = 0; i < 3; nextTower = (nextTower + 1) % NUM_OF_TOWERS, i++)
 		{
 			// found non-destroyed tower, transfer to it
-			if (c.towers[nextTower].Health > 0)
+			if (!TOWER::IsDestroyed(c.towers[nextTower]))
 			{
-				_Transfer(&c.towers[region], &c.towers[nextTower], SHLD_FITR);
-				_Transfer(&c.towers[region], &c.towers[nextTower], FITR);
+				_Transfer(&c.towers[region], &c.towers[nextTower], SHLD_FITR, (REGION)nextTower);
+				_Transfer(&c.towers[region], &c.towers[nextTower], FITR, (REGION)nextTower);
 				return;
 			}
 		}
 	}
 
 	// move enemies from Tower 1 --> Tower 2
-	void _Transfer(Tower* T1, Tower* T2, TYPE type)
+	void _Transfer(Tower* T1, Tower* T2, TYPE type, const REGION &Region)
 	{
+		assert(!TOWER::IsEmpty(*T1) && "Attempt to move an empty tower");
+
 		Enemy* list1 = nullptr; Enemy* list2 = nullptr;
 		// choose the list to transfer
 		switch (type)
@@ -240,8 +243,45 @@ namespace TOWER
 				break;
 		}
 
-		// iterate through all enemies in list1
-		while (list2 && list1)
+		// special case
+		// when tower2 is empty, make it point at tower1 list
+		if (T2->firstShielded == NULL && type == SHLD_FITR)
+		{
+			int num = TOWER::GetNumOfShielded(T1);
+
+			// fix all enemies before inserting
+			for (Enemy* temp = T1->firstShielded; temp;temp = temp->next)
+				_Fix_forTransfer(T2, temp, Region);
+
+			T2->firstShielded = T1->firstShielded;
+			T1->firstShielded = NULL;
+
+			// update number of enemeies
+			T1->num_enemies -= num;
+			T2->num_enemies += num;
+
+			return;
+		}
+		else if (T2->firstEnemy == NULL && type != SHLD_FITR)
+		{
+			int num = TOWER::GetNumOfNormal(T1);
+
+			// fix all enemies before inserting
+			for (Enemy* temp = T1->firstEnemy; temp;temp = temp->next)
+				_Fix_forTransfer(T2, temp, Region);
+
+			T2->firstEnemy = T1->firstEnemy;
+			T1->firstEnemy = NULL;
+
+			// update number of enemeies
+			T1->num_enemies -= num;
+			T2->num_enemies += num;
+
+			return;
+		}
+
+		// iterate through all enemies in list1 till it is empty
+		while (list1)
 		{
 			// to move it
 			Enemy* temp = list1;
@@ -249,35 +289,77 @@ namespace TOWER
 			// now list points at next one
 			list1 = list1->next;
 
-			// cut it
+			// cut it from list1, if list1 became null you dont need to do that
 			if (list1)
 				list1->prev = nullptr;
 			
 			temp->next = temp->prev = nullptr;
 
+			bool reached_the_end = false;
 			// move list2 to the proper position
-			while (list2 && temp->arrive_time > list2->arrive_time)
-				list2 = list2->next;
-
-			ENEMY::_InsertBefore(temp, list2);
-
-			// if list2 is first one, insert at first position
-			if (temp->prev == nullptr)
+			// proper position: where this arrive_time <= the next one 
+			while (temp->arrive_time > list2->arrive_time)	// while this is greater than the next
 			{
-				// insert at first
-				if (type == SHLD_FITR)
-					T2->firstShielded = list1;		
-				else 
-					T2->firstEnemy = list1;
+				assert(list2 && "how this can be NULL?");
+				// if this is the last one
+				if (list2->next == nullptr)
+				{
+					// make a flag that we are trying to append at the end of the list
+					// and break to prevent making list2 nullptr
+					reached_the_end = true;
+					break;
+				}
+
+				// move pointer to next
+				list2 = list2->next;
 			}
+
+
+			// insert at the END
+			if (reached_the_end)
+				ENEMY::_InsertAfter(temp, list2);
+			// insert before list2
+			else
+				ENEMY::_InsertBefore(temp, list2);
+
+			// isert at BEGINNING
+			if (temp->prev == nullptr)	// when temp is inserted at beginning, prev becomes NULL as it is the first enemy
+			{
+				if (type == SHLD_FITR)
+					T2->firstShielded = temp;		
+				else 
+					T2->firstEnemy = temp;
+			}
+			
+			//update enemy region and position if needed
+			_Fix_forTransfer(T2, temp, Region);
+
+			// update number of enemies in both towers
+			T1->num_enemies--;
+			T2->num_enemies++;
 		}
+
+		// now tower1 points at nothing
+		if (type == SHLD_FITR)
+			T1->firstShielded = NULL;
+		else
+			T1->firstEnemy = NULL;
+	}
+
+	// fixes enemy variables like distance and region after transfering
+	// T is the tower transfered to
+	void _Fix_forTransfer(Tower* T, Enemy *e, const REGION &Region)
+	{
+		e->Region = Region;
+
+		if (e->Distance < T->unpaved)
+			e->Distance = T->unpaved;
 	}
 
 	// delete all lists in tower
 	void Destroy(Tower* T)
 	{
-		if (!T)
-			throw -1;
+		assert(T && "Attempt to destroy null tower");
 
 		if (T->firstEnemy)
 			ENEMY::Destroy(T->firstEnemy);
@@ -292,6 +374,38 @@ namespace TOWER
 	bool HasFinished(Tower &T)
 	{
 		return (IsEmpty(T) || IsDestroyed(T));
+	}
+
+	int GetNumOfShielded(Tower *T)
+	{
+		assert(T && "tower ptr is NULL");
+
+		Enemy* temp = T->firstShielded;
+		int num = 0;
+
+		while (temp)
+		{
+			num++;
+			temp = temp->next;
+		}
+
+		return num;
+	}
+
+	int GetNumOfNormal(Tower *T)
+	{
+		assert(T && "tower ptr is NULL");
+
+		Enemy* temp = T->firstEnemy;
+		int num = 0;
+
+		while (temp)
+		{
+			num++;
+			temp = temp->next;
+		}
+
+		return num;
 	}
 }
 
@@ -557,15 +671,46 @@ namespace ENEMY
 	// insert e1 before e2
 	void _InsertBefore(Enemy* e1, Enemy* e2)
 	{
+		assert((e1 || e2) && "_insertBefore tried to insert a null enemy");
+
+		// assume the enemy before e2 is e0
+		Enemy* e0 = e2->prev;		
+
+		// before inserting
+		// e0 <-> e2
+		//	   e1
+
+		// change e1 pointers
 		e1->next = e2;
-			
-		if (!e2 || !e2->prev)
-			return;
+		e1->prev = e0;
+		//  e0 <-> e2
+		//	 < e1 >
 
-		e1->prev = e2->prev;
-		e2->prev->next = e1;
-
+		// change e2 pointers
 		e2->prev = e1;
+			
+		// change e0 pointers, if e0 exists
+		if (e0)
+			e0->next = e1;
+
+		// after inserting
+		// e0 <-> e1 <-> e2
+
+		// if e0 is null, this will be the result
+		// NULL <- e1 <-> e2
+	}
+
+	// insert e1 after e2 in list
+	void _InsertAfter(Enemy* e1, Enemy* &e2)
+	{
+		// append at end
+		e2->next = e1;
+
+		e1->prev = e2;
+		e1->next = nullptr;
+
+		// update list2
+		e2 = e1;
 	}
 
 	char GetRegion(Enemy *e)
@@ -810,10 +955,16 @@ namespace Log
 
 			outFile << "Total Enemies = " << total_enemies_beg << '\n';
 
-			assert(total_enemies_beg && "Enemies at beginning are zero, a try to divide on zero occurred");
-
-			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
-			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
+			if (total_enemies_beg == 0)
+			{
+				outFile << "Average Fight Delay = " << "N/A" << '\n';
+				outFile << "Average Kill Delay = " << "N/A" << '\n';
+			}
+			else
+			{
+				outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
+				outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
+			}
 		}
 		else if (CASTLE::IsDestroyed(c)) // LOOSE
 		{
@@ -825,10 +976,17 @@ namespace Log
 			outFile << "Number of killed enemies = " << total_killed << '\n';
 			outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
 
-			assert(total_killed && "total killed cant be 0 and the game is LOST, a try do divide on 0");
-
-			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
-			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
+			if (total_killed == 0)	// no one was killed
+			{
+				outFile << "Average Fight Delay = " << "N/A" << '\n';
+				outFile << "Average Kill Delay = " << "N/A" << '\n';
+			}
+			else
+			{
+				outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
+				outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
+			}
+			
 		}
 			
 

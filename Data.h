@@ -64,9 +64,12 @@ namespace TOWER
 	bool IsDestroyed(const Tower &t);
 	void Damage(Enemy* e, Tower* t);
 	void Transfer(Castle &c, int region);
-	void _Transfer(Tower* T1, Tower* T2, TYPE type);
+	void _Transfer(Tower* T1, Tower* T2, TYPE type, const REGION &Region);
+	void _Fix_forTransfer(Tower* T, Enemy *e, const REGION &Region);
 	void Destroy(Tower* T);
 	bool HasFinished(Tower &T);
+	int GetNumOfShielded(Tower *T);
+	int GetNumOfNormal(Tower *T);
 }
 
 namespace ENEMY
@@ -98,6 +101,7 @@ namespace ENEMY
 	void Fire(Enemy* e,Tower* t);
 
 	void _InsertBefore(Enemy* e1, Enemy* e2);
+	void _InsertAfter(Enemy* e1, Enemy* &e2);
 
 	bool IsShielded(const Enemy *e);
 
