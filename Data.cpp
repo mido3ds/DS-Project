@@ -955,10 +955,16 @@ namespace Log
 
 			outFile << "Total Enemies = " << total_enemies_beg << '\n';
 
-			assert(total_enemies_beg && "Enemies at beginning are zero, a try to divide on zero occurred");
-
-			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
-			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
+			if (total_enemies_beg == 0)
+			{
+				outFile << "Average Fight Delay = " << "N/A" << '\n';
+				outFile << "Average Kill Delay = " << "N/A" << '\n';
+			}
+			else
+			{
+				outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_enemies_beg) << '\n';
+				outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_enemies_beg) << '\n';
+			}
 		}
 		else if (CASTLE::IsDestroyed(c)) // LOOSE
 		{
@@ -970,10 +976,17 @@ namespace Log
 			outFile << "Number of killed enemies = " << total_killed << '\n';
 			outFile << "Number of alive enemies = " << CASTLE::GetTotalEnemies(c) << '\n';
 
-			assert(total_killed && "total killed cant be 0 and the game is LOST, a try do divide on 0");
-
-			outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
-			outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
+			if (total_killed == 0)	// no one was killed
+			{
+				outFile << "Average Fight Delay = " << "N/A" << '\n';
+				outFile << "Average Kill Delay = " << "N/A" << '\n';
+			}
+			else
+			{
+				outFile << "Average Fight Delay = " << total_FD / static_cast<double>(total_killed) << '\n';
+				outFile << "Average Kill Delay = " << total_KD / static_cast<double>(total_killed) << '\n';
+			}
+			
 		}
 			
 
