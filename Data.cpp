@@ -330,6 +330,9 @@ namespace TOWER
 				else 
 					T2->firstEnemy = temp;
 			}
+			
+			//update enemy region and position if needed
+			_Fix_forTransfer(T2, temp, list2->Region);
 
 			// update number of enemies in both towers
 			T1->num_enemies--;
@@ -341,6 +344,16 @@ namespace TOWER
 			T1->firstShielded = NULL;
 		else
 			T1->firstEnemy = NULL;
+	}
+
+	// fixes enemy variables like distance and region after transfering
+	// T is the tower transfered to
+	void _Fix_forTransfer(Tower* T, Enemy *e, const REGION &Region)
+	{
+		e->Region = Region;
+
+		if (e->Distance < T->unpaved)
+			e->Distance = T->unpaved;
 	}
 
 	// delete all lists in tower

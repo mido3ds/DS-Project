@@ -65,6 +65,7 @@ namespace TOWER
 	void Damage(Enemy* e, Tower* t);
 	void Transfer(Castle &c, int region);
 	void _Transfer(Tower* T1, Tower* T2, TYPE type);
+	void _Fix_forTransfer(Tower* T, Enemy *e, const REGION &Region);
 	void Destroy(Tower* T);
 	bool HasFinished(Tower &T);
 	int GetNumOfShielded(Tower *T);
