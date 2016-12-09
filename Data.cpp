@@ -326,9 +326,9 @@ namespace TOWER
 			{
 				// insert at first
 				if (type == SHLD_FITR)
-					T2->firstShielded = list1;		
+					T2->firstShielded = temp;		
 				else 
-					T2->firstEnemy = list1;
+					T2->firstEnemy = temp;
 			}
 
 			// update number of enemies in both towers
@@ -664,8 +664,8 @@ namespace ENEMY
 			return;
 
 		e1->prev = e2->prev;
-		e2->prev->next = e1;
 
+		e2->prev->next = e1;
 		e2->prev = e1;
 	}
 
