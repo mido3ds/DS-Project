@@ -2,7 +2,7 @@
 #include <windows.h>
 
 // to play sounds, make this macro = 1
-#define __PLAY_SND_ 
+//#define __PLAY_SND_ 
 
 #ifndef __PLAY_SND_
 	#define Play(name) 

@@ -32,12 +32,6 @@
   <ItemGroup>
     <Text Include="input.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Media Include="sounds\fight.wav" />
-    <Media Include="sounds\gun.wav" />
-    <Media Include="sounds\intro.wav" />
-    <Media Include="sounds\win.wav" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{037DF17C-24F5-4F65-BE23-82940B17B777}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
