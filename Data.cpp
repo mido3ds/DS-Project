@@ -217,15 +217,15 @@ namespace TOWER
 			// found non-destroyed tower, transfer to it
 			if (!TOWER::IsDestroyed(c.towers[nextTower]))
 			{
-				_Transfer(&c.towers[region], &c.towers[nextTower], SHLD_FITR);
-				_Transfer(&c.towers[region], &c.towers[nextTower], FITR);
+				_Transfer(&c.towers[region], &c.towers[nextTower], SHLD_FITR, (REGION)nextTower);
+				_Transfer(&c.towers[region], &c.towers[nextTower], FITR, (REGION)nextTower);
 				return;
 			}
 		}
 	}
 
 	// move enemies from Tower 1 --> Tower 2
-	void _Transfer(Tower* T1, Tower* T2, TYPE type)
+	void _Transfer(Tower* T1, Tower* T2, TYPE type, const REGION &Region)
 	{
 		assert(!TOWER::IsEmpty(*T1) && "Attempt to move an empty tower");
 
@@ -243,33 +243,41 @@ namespace TOWER
 				break;
 		}
 
-		// when T2 is empty, just make it point at all enemies in T1
-		if (TOWER::IsEmpty(*T2))
+		// special case
+		// when tower2 is empty, make it point at tower1 list
+		if (T2->firstShielded == NULL && type == SHLD_FITR)
 		{
-			if (type == SHLD_FITR)
-			{
-				int num = TOWER::GetNumOfShielded(T1);
+			int num = TOWER::GetNumOfShielded(T1);
 
-				T2->firstShielded = T1->firstShielded;
-				T1->firstShielded = NULL;
+			// fix all enemies before inserting
+			for (Enemy* temp = T1->firstShielded; temp;temp = temp->next)
+				_Fix_forTransfer(T2, temp, Region);
 
-				// update number of enemeies
-				T1->num_enemies -= num;
-				T2->num_enemies += num;
-			}
-			else 
-			{
-				int num = TOWER::GetNumOfNormal(T1);
+			T2->firstShielded = T1->firstShielded;
+			T1->firstShielded = NULL;
 
-				T2->firstEnemy = T1->firstEnemy;
-				T1->firstEnemy = NULL;
+			// update number of enemeies
+			T1->num_enemies -= num;
+			T2->num_enemies += num;
 
-				// update number of enemeies
-				T1->num_enemies -= num;
-				T2->num_enemies += num;
-			}
 			return;
+		}
+		else if (T2->firstEnemy == NULL && type != SHLD_FITR)
+		{
+			int num = TOWER::GetNumOfNormal(T1);
 
+			// fix all enemies before inserting
+			for (Enemy* temp = T1->firstEnemy; temp;temp = temp->next)
+				_Fix_forTransfer(T2, temp, Region);
+
+			T2->firstEnemy = T1->firstEnemy;
+			T1->firstEnemy = NULL;
+
+			// update number of enemeies
+			T1->num_enemies -= num;
+			T2->num_enemies += num;
+
+			return;
 		}
 
 		// iterate through all enemies in list1 till it is empty
@@ -292,6 +300,7 @@ namespace TOWER
 			// proper position: where this arrive_time <= the next one 
 			while (temp->arrive_time > list2->arrive_time)	// while this is greater than the next
 			{
+				assert(list2 && "how this can be NULL?");
 				// if this is the last one
 				if (list2->next == nullptr)
 				{
@@ -305,26 +314,17 @@ namespace TOWER
 				list2 = list2->next;
 			}
 
-			ENEMY::_InsertBefore(temp, list2);
 
-			/* Special Cases */
-
-			// trying to insert at the END
+			// insert at the END
 			if (reached_the_end)
-			{
-				// append at end
-				list2->next = temp;
+				ENEMY::_InsertAfter(temp, list2);
+			// insert before list2
+			else
+				ENEMY::_InsertBefore(temp, list2);
 
-				temp->prev = list2;
-				temp->next = nullptr;
-
-				// update list2
-				list2 = temp;
-			}
-			// trying to isert at BEGINNING
-			else if (list2 && temp->prev == nullptr)
+			// isert at BEGINNING
+			if (temp->prev == nullptr)	// when temp is inserted at beginning, prev becomes NULL as it is the first enemy
 			{
-				// insert at first
 				if (type == SHLD_FITR)
 					T2->firstShielded = temp;		
 				else 
@@ -332,7 +332,7 @@ namespace TOWER
 			}
 			
 			//update enemy region and position if needed
-			_Fix_forTransfer(T2, temp, list2->Region);
+			_Fix_forTransfer(T2, temp, Region);
 
 			// update number of enemies in both towers
 			T1->num_enemies--;
@@ -671,15 +671,46 @@ namespace ENEMY
 	// insert e1 before e2
 	void _InsertBefore(Enemy* e1, Enemy* e2)
 	{
+		assert((e1 || e2) && "_insertBefore tried to insert a null enemy");
+
+		// assume the enemy before e2 is e0
+		Enemy* e0 = e2->prev;		
+
+		// before inserting
+		// e0 <-> e2
+		//	   e1
+
+		// change e1 pointers
 		e1->next = e2;
-			
-		if (!e2 || !e2->prev)
-			return;
+		e1->prev = e0;
+		//  e0 <-> e2
+		//	 < e1 >
 
-		e1->prev = e2->prev;
-
-		e2->prev->next = e1;
+		// change e2 pointers
 		e2->prev = e1;
+			
+		// change e0 pointers, if e0 exists
+		if (e0)
+			e0->next = e1;
+
+		// after inserting
+		// e0 <-> e1 <-> e2
+
+		// if e0 is null, this will be the result
+		// NULL <- e1 <-> e2
+	}
+
+	// insert e1 after e2 in list
+	void _InsertAfter(Enemy* e1, Enemy* &e2)
+	{
+		// append at end
+		e2->next = e1;
+
+		e1->prev = e2;
+		e1->next = nullptr;
+
+		// update list2
+		e2 = e1;
 	}
 
 	char GetRegion(Enemy *e)
