@@ -287,14 +287,42 @@ namespace TOWER
 			
 			temp->next = temp->prev = nullptr;
 
+			bool reached_the_end = false;
 			// move list2 to the proper position
-			while (list2 && temp->arrive_time > list2->arrive_time)
+			// proper position: where this arrive_time <= the next one 
+			while (temp->arrive_time > list2->arrive_time)	// while this is greater than the next
+			{
+				// if this is the last one
+				if (list2->next == nullptr)
+				{
+					// make a flag that we are trying to append at the end of the list
+					// and break to prevent making list2 nullptr
+					reached_the_end = true;
+					break;
+				}
+
+				// move pointer to next
 				list2 = list2->next;
+			}
 
 			ENEMY::_InsertBefore(temp, list2);
 
-			// if list2 is first one, insert at first position
-			if (list2 && temp->prev == nullptr)
+			/* Special Cases */
+
+			// trying to insert at the END
+			if (reached_the_end)
+			{
+				// append at end
+				list2->next = temp;
+
+				temp->prev = list2;
+				temp->next = nullptr;
+
+				// update list2
+				list2 = temp;
+			}
+			// trying to isert at BEGINNING
+			else if (list2 && temp->prev == nullptr)
 			{
 				// insert at first
 				if (type == SHLD_FITR)
