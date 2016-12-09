@@ -716,7 +716,11 @@ namespace Log
 		}
 		
 		// write first line
-		outFile << "KTS	  S	 FD	 KD	 FT\n";
+		outFile << "KTS" << space(DEFAULT - 2)
+				<< "S"	 << space(DEFAULT)
+				<< "FD"	 << space(DEFAULT)
+				<< "KD"	 << space(DEFAULT)
+				<< "FT\n";
 
 		total_enemies_beg = CASTLE::GetTotalEnemies(c);
 		tower_health_beg = c.towers[0].Health;
@@ -738,10 +742,10 @@ namespace Log
 
 		const int &KTS = time, &S = e->ID, &FD = e->fight_delay, &KD = e->kill_delay, &FT = KD + FD;
 
-		outFile << KTS << "	  " 
-				<< S << "	" 
-				<< FD << "	 " 
-				<< KD<< "	" 
+		outFile << KTS << space(DEFAULT) 
+				<< S << space(DEFAULT) 
+				<< FD << space(DEFAULT) 
+				<< KD << space(DEFAULT) 
 				<< FT << '\n';
 
 		last_killed[e->Region] += 1;
@@ -764,17 +768,24 @@ namespace Log
 			T3_D = tower_health_beg - c.towers[2].Health,
 			T4_D = tower_health_beg - c.towers[3].Health;
 
-		outFile << "T1_Total_Damage T2_Total_Damage T3_Total_Damage T4_Total_Damage\n";
-		outFile << T1_D << ' '
-				<< T2_D << ' '
-				<< T3_D << ' '
+		outFile << "T1_Total_Damage"<< space(DEFAULT) 
+				<< "T2_Total_Damage" << space(DEFAULT) 
+				<< "T3_Total_Damage" << space(DEFAULT) 
+				<< "T4_Total_Damage\n";
+		outFile << T1_D << space(DEFAULT)
+				<< T2_D << space(DEFAULT)
+				<< T3_D << space(DEFAULT)
 				<< T4_D << '\n';
 
 		// print unpaved
-		outFile << "R1_Distance R2_Distance R3_Distance R4_Distance\n";
-		outFile << c.towers[0].unpaved << ' '	
-				<< c.towers[1].unpaved << ' '
-				<< c.towers[2].unpaved << ' '
+		outFile << "R1_Distance" << space(DEFAULT)
+				<< "R2_Distance" << space(DEFAULT)
+				<< "R3_Distance" << space(DEFAULT)
+				<< "R4_Distance\n";
+
+		outFile << c.towers[0].unpaved << space(DEFAULT)	
+				<< c.towers[1].unpaved << space(DEFAULT)
+				<< c.towers[2].unpaved << space(DEFAULT)
 				<< c.towers[3].unpaved << '\n';
 	}
 
@@ -831,13 +842,13 @@ namespace Log
 		// loop through towrs and print their data 
 
 		cout << "Region  #Current enemies  #Last killed enemies  #All killed enemies  #Unpaved distance\n";
-
+		int align = 3;
 		for (int region = A_REG; region <= D_REG; region++)
 		{
-			cout << ENEMY::GetRegion(region) << "		"
-				 << c.towers[region].num_enemies << "		"
-				 <<	last_killed[region] << "		"
-				 << all_killed[region] << "			"
+			cout << space(3) << ENEMY::GetRegion(region) << space(DEFAULT * align)
+				 << c.towers[region].num_enemies << space(DEFAULT * align)
+				 <<	last_killed[region] << space(DEFAULT * align + 6)
+				 << all_killed[region] << space(DEFAULT * align + 6)
 				 << c.towers[region].unpaved << '\n';
 
 			last_killed[region] = 0;		// reset it for second time step

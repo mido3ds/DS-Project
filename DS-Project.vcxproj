@@ -36,7 +36,6 @@
     <Media Include="sounds\fight.wav" />
     <Media Include="sounds\gun.wav" />
     <Media Include="sounds\intro.wav" />
-    <Media Include="sounds\menu.mp3" />
     <Media Include="sounds\win.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

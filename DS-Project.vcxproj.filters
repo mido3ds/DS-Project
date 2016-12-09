@@ -63,9 +63,6 @@
     <Media Include="sounds\intro.wav">
       <Filter>Resource Files</Filter>
     </Media>
-    <Media Include="sounds\menu.mp3">
-      <Filter>Resource Files</Filter>
-    </Media>
     <Media Include="sounds\win.wav">
       <Filter>Resource Files</Filter>
     </Media>

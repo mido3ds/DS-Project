@@ -79,6 +79,7 @@ namespace Control
 
 		default:
 			// silent mode
+			Stop();
 			mode = SILENT;
 			break;
 		}
