@@ -1,6 +1,7 @@
 ﻿#include "Control.h"
 #include <cstdlib>
 #include <limits>
+#include <conio.h>
 
 /*		// Tips: Read Carefully!  //
 *   -document everything you write, comment it and be aware of the readability of your code, and chose meaningfull nanes for variables 
@@ -52,14 +53,16 @@ namespace Control
 	// returns chosen mode
 	Mode GetMode()
 	{
+		Playloop(INTRO_SOUND);
 		printf("Choose the mode by entering its number:\n");
 		printf("1- Interactive Mode\n");
 		printf("2- Step-by-step Mode\n");
 		printf("3- Silent Mode\n");
 
 		Mode mode;
-
-		char q = cin.get();
+		char q = _getch();
+		Stop();
+		Play(MENU_SOUND);
 		switch (q)
 		{
 		case '1':
@@ -70,6 +73,8 @@ namespace Control
 		case '2':
 			// step by step
 			mode = STEP;
+			Sleep(600);
+			Playloop(FIGHT_SOUND);
 			break;
 
 		default:
@@ -187,8 +192,8 @@ namespace Control
 			case INTERACTIVE:
 			{
 				// take input from user to continue
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');		// ignore last input not to be fooled :D
-				cin.get();
+				//cin.ignore(numeric_limits<streamsize>::max(), '\n');		// ignore last input not to be fooled :D
+				_getch();
 				return;
 			}
 			case STEP:

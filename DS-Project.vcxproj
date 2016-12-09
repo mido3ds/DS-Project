@@ -20,6 +20,7 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="help.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,13 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\fight.wav" />
+    <Media Include="sounds\gun.wav" />
+    <Media Include="sounds\intro.wav" />
+    <Media Include="sounds\menu.mp3" />
+    <Media Include="sounds\win.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{037DF17C-24F5-4F65-BE23-82940B17B777}</ProjectGuid>
@@ -89,6 +97,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Duplicate|Win32'">

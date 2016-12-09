@@ -15,6 +15,9 @@ using namespace Control;
 // comment this on releasing to activate main 
 #include "test.h"
 
+// comment this to disable sounds
+
+
 #ifndef _TEST_
 int main()
 {

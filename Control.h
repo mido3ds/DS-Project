@@ -15,6 +15,7 @@
 #include "Data.h"
 #include "Const.h"
 #include "Graph.h"
+#include "Sound.h"
 using namespace std;
 
 

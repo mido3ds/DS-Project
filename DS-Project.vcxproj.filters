@@ -33,6 +33,9 @@
     <ClInclude Include="help.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graph.cpp">
@@ -52,5 +55,22 @@
     <Text Include="input.txt">
       <Filter>Resource Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\gun.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="sounds\intro.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="sounds\menu.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="sounds\win.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="sounds\fight.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

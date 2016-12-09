@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cassert>
 #include "Const.h"
+#include "Sound.h"
 using namespace std;
 /*  Data header file, contains all data structure to store data of castles and enemies
 *   and functions prototypes to read, write, modifie and delete them ...etc

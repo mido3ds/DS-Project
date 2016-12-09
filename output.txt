@@ -1,12 +1,9 @@
 KTS	  S	 FD	 KD	 FT
-1	  15	0	 1	1
-1	  49	0	 0	0
-1	  6	0	 1	1
-2	  22	0	 2	2
-2	  95	0	 0	0
-2	  40	0	 1	1
-3	  10	0	 3	3
-3	  0	0	 3	3
-4	  133	0	 1	1
-4	  72	0	 2	2
-4	  16	0	 4	4
+7	  2	0	 6	6
+57	  0	0	 57	57
+66	  3	0	 59	59
+123	  1	0	 123	123
+Game is WIN
+Total Enemies = 4
+Average Fight Delay = 0
+Average Kill Delay = 61.25
