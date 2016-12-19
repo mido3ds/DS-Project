@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import random
 
+type = list(range(5))
+includeTank = 0
+
 class enemy(object):
 	def __init__(self, i, TY, T, H, Pow, Prd, Speed, R):
 		self.i = i
@@ -24,12 +27,13 @@ TP = random.randrange(1, 300)
 
 # generate enemies
 n = int(input("Number of enemies: "))
-#includeSpeed = int(input("Include Enemies Speeds in File? [bonus] 0/1?"))
+if includeTank != 1:
+	type.pop(type[4])
 includeSpeed = 1
 list = []
 
 for i in range(n):
-	TY = random.randrange(0, 5)
+	TY = random.choice(type)
 	T = int(random.random() * 10) 
 	H = random.randrange(1, TH)
 	Pow = random.randrange(1, TP)

@@ -41,7 +41,7 @@ void DrawEnemy(const Enemy& E, int Ypos=0);
 
 void PutAt(char q, int x, int y);
 
-namespace HELICOPTER
+namespace TANK
 {
 	void Draw(const int &x, const int &y);
 }

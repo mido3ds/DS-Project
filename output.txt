@@ -1,6 +1,11 @@
 KTS  S   FD   KD  FT
-Game is LOST
-Number of killed enemies = 0
-Number of alive enemies = 60006
-Average Fight Delay = N/A
-Average Kill Delay = N/A
+13    1    0    7    7
+16    0    0   13   13
+T1_Total_Damage  T2_Total_Damage  T3_Total_Damage  T4_Total_Damage
+       0                 0                 2                 0
+R1_Distance  R2_Distance  R3_Distance  R4_Distance
+      30         30          0              30
+Game is WIN
+Total Enemies = 2
+Average Fight Delay = 0
+Average Kill Delay = 10

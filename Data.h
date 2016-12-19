@@ -31,7 +31,7 @@ enum TYPE {
 	FITR,
 	SHLD_FITR,
 	DOC,
-	HELICOPTER_t
+	TANK_ENEM
 };
 
 //The four regions: A, B, C , and D
@@ -116,7 +116,7 @@ namespace ENEMY
 
 	bool IsDoctor(Enemy* e);
 
-	bool IsHelicopter(Enemy *e);
+	bool IsTank(Enemy *e);
 
 	char GetRegion(Enemy *e);
 
@@ -174,7 +174,7 @@ namespace PAVER
 	void Pave(Enemy* e, Tower* t);
 }
 
-namespace HELICOPTER
+namespace TANK
 {
 	void Drop(Enemy* h, Tower* T, const int &timer);
 }

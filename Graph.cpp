@@ -182,8 +182,8 @@ void DrawEnemy(const Enemy& E, int Ypos)
 		color(FOREGROUND_RED);
 	}
 
-	if (EnemyType == HELICOPTER_t)
-		HELICOPTER::Draw(x, y);
+	if (EnemyType == TANK_ENEM)
+		TANK::Draw(x, y);
 	else if (EnemyType == DOC)
 		DOCTOR::Draw(x, y);
 	else
@@ -298,20 +298,26 @@ void PutAt(char q, int x, int y)
 	cout << (char)q;
 }
 
-namespace HELICOPTER
+namespace TANK
 {
 	void Draw(const int &x, const int &y)
 	{
-		color(FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
+		color(GREY);
 
-		PutAt('X', x, y);
+		const char shape = '#';
 
-		PutAt('\\', x - 1, y - 1);
-		PutAt('\\', x + 1, y + 1);
+		PutAt('*', x, y);
 
-		PutAt('/', x + 1, y - 1);
-		PutAt('/', x - 1, y + 1);
+		PutAt(shape, x + 1, y);
+		PutAt(shape, x - 1, y);
 
+		PutAt(shape, x, y + 1);
+		PutAt(shape, x + 1, y + 1);
+		PutAt(shape, x - 1, y + 1);
+
+		PutAt(shape, x, y - 1);
+		PutAt(shape, x + 1, y - 1);
+		PutAt(shape, x - 1, y - 1);
 	}
 }
 

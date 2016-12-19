@@ -21,5 +21,6 @@
 #define MIN_DISTANCE_FROM_CASTLE    2
 #define DEFAULT 5
 #define TO_CENTRE "                                 "
+#define GREY 8
 
 #define space(num) setw(num)

@@ -448,8 +448,8 @@ namespace ENEMY
 			if (ENEMY::CanFire(e, timer))
 				ENEMY::Fire(e, T);
 
-			if (ENEMY::IsHelicopter(e))
-				HELICOPTER::Drop(e, T, timer);
+			if (ENEMY::IsTank(e))
+				TANK::Drop(e, T, timer);
 
 			active[act_count++] = e;
 
@@ -583,9 +583,9 @@ namespace ENEMY
 		return (e.Type == FITR);
 	}
 
-	bool IsHelicopter(Enemy *e)
+	bool IsTank(Enemy *e)
 	{
-		return (e->Type == HELICOPTER_t);
+		return (e->Type == TANK_ENEM);
 	}
 
 	// remove enemy from the list 
@@ -864,10 +864,10 @@ namespace DOCTOR
 	{
 		// increase health of next and prev
 		
-		if (d->next && !ENEMY::IsHelicopter(d->next))
+		if (d->next && !ENEMY::IsTank(d->next))
 			d->next->Health += d->fire_power / 2.0;
 
-		if (d->prev && !ENEMY::IsHelicopter(d->prev))
+		if (d->prev && !ENEMY::IsTank(d->prev))
 			d->prev->Health += d->fire_power / 2.0;
 	}
 }
@@ -892,12 +892,12 @@ namespace PAVER
 	}
 }
 
-namespace HELICOPTER
+namespace TANK
 {
 	// genarates random enemies and add them to next of heli
 	void Drop(Enemy* h, Tower* T, const int &timer)
 	{
-		assert(h && T && "helicopter or tower given to drop is NULL");
+		assert(h && T && "tank or tower given to drop is NULL");
 
 		if (!ENEMY::CanFire(h, timer))
 			return;
@@ -996,24 +996,24 @@ namespace Log
 			T3_D = tower_health_beg - c.towers[2].Health,
 			T4_D = tower_health_beg - c.towers[3].Health;
 
-		outFile << "T1_Total_Damage"<< space(DEFAULT) 
-				<< "T2_Total_Damage" << space(DEFAULT) 
-				<< "T3_Total_Damage" << space(DEFAULT) 
+		outFile << "T1_Total_Damage"<< "  "
+				<< "T2_Total_Damage" << "  "
+				<< "T3_Total_Damage" << "  "
 				<< "T4_Total_Damage\n";
-		outFile << T1_D << space(DEFAULT)
-				<< T2_D << space(DEFAULT)
-				<< T3_D << space(DEFAULT)
+		outFile << space(8) << T1_D << space(18)
+				<< T2_D << space(18)
+				<< T3_D << space(18)
 				<< T4_D << '\n';
 
 		// print unpaved
-		outFile << "R1_Distance" << space(DEFAULT)
-				<< "R2_Distance" << space(DEFAULT)
-				<< "R3_Distance" << space(DEFAULT)
+		outFile << "R1_Distance" << "  "
+				<< "R2_Distance" << "  "
+				<< "R3_Distance" << "  "
 				<< "R4_Distance\n";
 
-		outFile << c.towers[0].unpaved << space(DEFAULT)	
-				<< c.towers[1].unpaved << space(DEFAULT)
-				<< c.towers[2].unpaved << space(DEFAULT)
+		outFile << space(8) << c.towers[0].unpaved << space(11)	
+				<< c.towers[1].unpaved << space(11)
+				<< c.towers[2].unpaved << space(16)
 				<< c.towers[3].unpaved << '\n';
 	}
 

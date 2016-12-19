@@ -32,6 +32,7 @@ namespace Control
 	// destroy castle and end log file
 	void End(Castle &c)
 	{
+		Log::ToFile(c);
 		Log::End(c);
 		CASTLE::Destroy(c);
 	}
@@ -270,14 +271,13 @@ namespace Control
 				e = e->next;
 			}
 
-			if(CountEnemies>15)
+			if(CountEnemies > 50)
 			{
 				draw = false;
 				break;
 			}
 
 		}
-
 		if(draw)
 		{
 			for(int distance = ((CmdWidth/2)-(CastleWidth/2)); distance > 1; distance--)
