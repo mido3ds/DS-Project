@@ -166,7 +166,7 @@ namespace TOWER
 			int min = i;
 			for(int j=i+1;j<kill_count;j++)
 			{
-				if (killed[j]->fight_delay < killed[j]->fight_delay)
+				if (killed[j]->fight_delay < killed[i]->fight_delay)
 					min = j;
 			}
 
@@ -771,6 +771,10 @@ namespace ENEMY
 		int id = ++Log::total_enemies_beg;
 		int health = rand() % 300 + 1; 
 		int type = rand() % 4;
+		if (type == SHLD_FITR)
+			type++;		// do not create shielded in this list
+		if (type == TANK_ENEM)
+			type--;
 		int firePow = rand() % 100;
 		int speed = rand() % 5 + 1;
 		int reload = rand() % 8 + 1;

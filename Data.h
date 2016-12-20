@@ -80,50 +80,29 @@ namespace TOWER
 namespace ENEMY
 {
 	Enemy* Initialize(const int &S, const int &TY, const int &T, const int &H, const int &Pow, const int &Prd, const int &Speed, const REGION &R);
-
 	void Loop(Enemy* e, Tower* T, const int &timer, Enemy* active[], int &act_count);
-
 	Enemy* Add(Tower* t, Enemy* &lastOne,
 		const int &S, const int &TY, const int &T, const int &H,
 		const int &Pow, const int &Prd, const int &Speed, const REGION &R);
-
 	void Move(Enemy &e, const Tower &T);
-
 	Enemy* AddToDead(Enemy* e);
-
 	void Print(const Enemy &e);
-
 	void Swap(Enemy* &a, Enemy* &b);
-
 	bool IsActive(const Enemy &e, const int &time);
-
 	void Kill(Enemy* e, Tower* t, const int &time);
-
 	bool CanFire(Enemy* e, int time);
-
 	void Damage(Enemy* e, Tower* t, const int &time);
-
 	void Fire(Enemy* e,Tower* t);
-
 	void _InsertBefore(Enemy* e1, Enemy* e2);
 	void _InsertAfter(Enemy* e1, Enemy* &e2);
-
 	bool IsShielded(const Enemy *e);
-
 	bool IsPaver(const Enemy &e);
-
 	bool IsFighter(const Enemy &e);
-
 	bool IsDoctor(Enemy* e);
-
 	bool IsTank(Enemy *e);
-
 	char GetRegion(Enemy *e);
-
 	char GetRegion(const int &region);
-
 	void Destroy(Enemy* e);
-
 	Enemy* _Generate(const int &timer, const int &region, const int &distance);
 }
 
