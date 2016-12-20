@@ -1,11 +1,13 @@
 KTS  S   FD   KD  FT
-13    1    0    7    7
-16    0    0   13   13
+1    0    0    0    0
+2    2    0    0    0
+2    1    0    1    1
+9    3    0    4    4
 T1_Total_Damage  T2_Total_Damage  T3_Total_Damage  T4_Total_Damage
-       0                 0                 2                 0
+       0                 0                 0                 2
 R1_Distance  R2_Distance  R3_Distance  R4_Distance
-      30         30          0              30
+      30         30         30              30
 Game is WIN
-Total Enemies = 2
+Total Enemies = 4
 Average Fight Delay = 0
-Average Kill Delay = 10
+Average Kill Delay = 1.25
