@@ -1,14 +1,12 @@
-// DO NOT EDIT THIS!  //
+#ifndef __Graph_h__
+#define __Graph_h__
 
-#pragma once
 #include <iostream>
 #include <windows.h>
 #include <io.h>
 #include <fcntl.h>
 #include "Data.h"
 using namespace std;
-
-//Functions Prototype
 
 /* public */
 
@@ -45,7 +43,10 @@ namespace TANK
 {
 	void Draw(const int &x, const int &y);
 }
+
 namespace DOCTOR
 {
 	void Draw(const int &x, const int &y);
 }
+
+#endif  /* __Graph_h__ */

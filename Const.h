@@ -1,6 +1,6 @@
-#pragma once 
-
-// contains all constants used in program
+/* contains all constants used in program */
+#ifndef __Const_h__
+#define __Const_h__
 
 #ifndef NULL
 #define NULL            nullptr
@@ -24,3 +24,5 @@
 #define GREY 8
 
 #define space(num) setw(num)
+
+#endif  /* __Const_h__ */

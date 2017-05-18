@@ -1,5 +1,7 @@
+#ifndef __Sound_h__
+#define __Sound_h__
+
 #pragma comment(lib, "winmm.lib")
-#pragma once
 #include <windows.h>
 
 // to play sounds, make this macro = 1
@@ -25,3 +27,5 @@
 #define FIGHT_SOUND ".\\sounds\\fight.wav"
 #define GUN_SOUND ".\\sounds\\gun.wav"
 #define MENU_SOUND ".\\sounds\\menu.wav"
+
+#endif  /* __Sound_h__ */

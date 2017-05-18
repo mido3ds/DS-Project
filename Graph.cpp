@@ -1,6 +1,4 @@
-﻿// DO NOT EDIT THIS! //
-
-#include "Graph.h"
+﻿#include "Graph.h"
 
 /*A function to set the position of cursor on the screen*/
 void gotoxy(const int &x, const int &y)
@@ -300,32 +298,32 @@ void PutAt(char q, int x, int y)
 
 namespace TANK
 {
-	void Draw(const int &x, const int &y)
-	{
-		color(GREY);
+void Draw(const int &x, const int &y)
+{
+	color(GREY);
 
-		const char shape = '#';
+	const char shape = '#';
 
-		PutAt('*', x, y);
+	PutAt('*', x, y);
 
-		PutAt(shape, x + 1, y);
-		PutAt(shape, x - 1, y);
+	PutAt(shape, x + 1, y);
+	PutAt(shape, x - 1, y);
 
-		PutAt(shape, x, y + 1);
-		PutAt(shape, x + 1, y + 1);
-		PutAt(shape, x - 1, y + 1);
+	PutAt(shape, x, y + 1);
+	PutAt(shape, x + 1, y + 1);
+	PutAt(shape, x - 1, y + 1);
 
-		PutAt(shape, x, y - 1);
-		PutAt(shape, x + 1, y - 1);
-		PutAt(shape, x - 1, y - 1);
-	}
+	PutAt(shape, x, y - 1);
+	PutAt(shape, x + 1, y - 1);
+	PutAt(shape, x - 1, y - 1);
+}
 }
 
 namespace DOCTOR
 {
-	void Draw(const int &x, const int &y)
-	{
-		color(FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-		PutAt(EnemyShape, x, y);  
-	}
+void Draw(const int &x, const int &y)
+{
+	color(FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+	PutAt(EnemyShape, x, y);  
+}
 }

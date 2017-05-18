@@ -7,8 +7,6 @@ using namespace Control;
 
 #define _TEST_
 
-// TODO: test if enemy is at 60 will it be drawn?
-
 int main()
 {
 	Start();
